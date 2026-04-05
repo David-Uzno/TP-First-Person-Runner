@@ -1,2 +1,6 @@
 ﻿<Solution>
+  <Project Path="Assembly-CSharp.csproj" />
+  <Project Path="Assembly-CSharp-Editor.csproj" />
+  <Project Path="GUPS.Obfuscator.csproj" />
+  <Project Path="GUPS.Editor.csproj" />
 </Solution>
