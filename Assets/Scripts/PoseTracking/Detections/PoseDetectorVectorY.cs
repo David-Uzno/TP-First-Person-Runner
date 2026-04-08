@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace TPRunner3D.PoseTracking
@@ -10,6 +11,8 @@ namespace TPRunner3D.PoseTracking
 
         [SerializeField, Min(0f)] private float _detectionThreshold = 0.08f;
         [SerializeField, Range(0.01f, 1f)] private float _smoothingFactor = 0.2f;
+
+        public event Action YSpikeDetected;
 
         private PoseTrackingController _trackingController;
         private bool _hasFilteredValue;
@@ -61,7 +64,7 @@ namespace TPRunner3D.PoseTracking
 
             if (!_isInSpikeState && deviation >= _detectionThreshold)
             {
-                Debug.Log("Cambio brusco en Y detectado");
+                YSpikeDetected?.Invoke();
                 _isInSpikeState = true;
             }
             else if (_isInSpikeState && deviation <= _detectionThreshold * 0.5f)
