@@ -73,3 +73,17 @@ crashlytics-build.properties
 # Temporary auto-generated Android Assets
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
+
+# OPS Obfuscator: allow necessary DLLs, PDB and XML
+!Assets/GUPS/Editor/Plugins/Mono.Cecil/*.dll
+!Assets/GUPS/Editor/Plugins/Mono.Cecil/*.pdb
+!Assets/GUPS/Obfuscator/Editor/Plugins/*dll
+!Assets/GUPS/Obfuscator/Editor/Plugins/*pdb
+!Assets/GUPS/Obfuscator/Editor/Plugins/*xml
+!Assets/GUPS/Plugins/Json/*dll
+!Assets/GUPS/Plugins/Json/*pdb
+!Assets/GUPS/Plugins/Json/*xml
+
+# OPS Obfuscator: ignore generated logs
+Assets/GUPS/Obfuscator/Log/*.txt
+Assets/GUPS/Obfuscator/Log/*.log

@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: ae949343449a98645bdeea70f426552b
+guid: ca7f6488a1eedf9488a4117c71c8cd89
 TextScriptImporter:
   externalObjects: {}
   userData: 
@@ -10,5 +10,5 @@ AssetOrigin:
   productId: 89420
   packageName: Obfuscator Free | Plug and Play Code Protection | v2026
   packageVersion: 2026.1.1
-  assetPath: Assets/GUPS/Plugins/Json/GUPS.Serialization.Json.xml
+  assetPath: Assets/GUPS/Obfuscator/ReadMe.md
   uploadId: 824088

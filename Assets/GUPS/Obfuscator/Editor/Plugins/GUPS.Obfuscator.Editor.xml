@@ -2549,13 +2549,6 @@
             </summary>
             <returns>The full path to the GUPS Obfuscator Settings directory.</returns>
         </member>
-        <member name="M:GUPS.Obfuscator.Editor.IO.PathHelper.Get_Obfuscator_Editor_Cache_Directory">
-            <summary>
-            Returns the full path to the GUPS Obfuscator Cache directory.
-            Used to store cached analysis results that persist across builds.
-            </summary>
-            <returns>The full path to the GUPS Obfuscator Cache directory.</returns>
-        </member>
         <member name="T:GUPS.Obfuscator.Editor.Assembly.DotNet.Helper.AssemblyHelper">
             <summary>
             Helper class for working with .NET assemblies in the obfuscator.
@@ -5272,29 +5265,6 @@
             returned.
             </summary>
         </member>
-        <member name="T:GUPS.Obfuscator.Editor.Assets.Unity.Cache.UnityAssetAnalysisCache">
-            <summary>
-            Represents cached analysis results for a single Unity asset.
-            Serialized as JSON and stored per-asset, keyed by asset GUID.
-            Used to skip re-analysis when the asset content has not changed.
-            </summary>
-        </member>
-        <member name="F:GUPS.Obfuscator.Editor.Assets.Unity.Cache.UnityAssetAnalysisCache.hash">
-            <summary>
-            The SHA-256 hash of the asset file content at the time of analysis.
-            </summary>
-        </member>
-        <member name="F:GUPS.Obfuscator.Editor.Assets.Unity.Cache.UnityAssetAnalysisCache.methods">
-            <summary>
-            Animation method names found in the asset (from AnimationClip events).
-            </summary>
-        </member>
-        <member name="F:GUPS.Obfuscator.Editor.Assets.Unity.Cache.UnityAssetAnalysisCache.types">
-            <summary>
-            Serialized TypeKey strings for StateMachineBehaviour types found in the asset.
-            Each entry uses the pipe-delimited format: "Assembly|FullName".
-            </summary>
-        </member>
         <member name="T:GUPS.Obfuscator.Editor.Assets.Unity.Cache.UnityAssetCache">
             <summary>
             A cache for Unity assets that provides fast access to assets by file extension.
@@ -5379,21 +5349,10 @@
             Gets the file extension of the asset, including the dot (e.g., ".prefab", ".asset").
             </summary>
         </member>
-        <member name="P:GUPS.Obfuscator.Editor.Assets.Unity.UnityAssetReference.Guid">
-            <summary>
-            Gets the Unity asset GUID for this asset, resolved via the AssetDatabase.
-            </summary>
-        </member>
-        <member name="P:GUPS.Obfuscator.Editor.Assets.Unity.UnityAssetReference.FileHash">
-            <summary>
-            Gets the SHA-256 hash of the asset file content as a lowercase hexadecimal string.
-            Computed at construction time using stream-based hashing to support large files efficiently.
-            </summary>
-        </member>
         <member name="M:GUPS.Obfuscator.Editor.Assets.Unity.UnityAssetReference.#ctor(System.String)">
             <summary>
             Initializes a new instance of the <see cref="T:GUPS.Obfuscator.Editor.Assets.Unity.UnityAssetReference"/> class.
-            Parses the provided path to extract file name, extension, GUID, and computes a SHA-256 content hash.
+            Parses the provided path to extract file name and extension information.
             </summary>
             <param name="_RelativeFilePath">The relative path to the Unity asset file.</param>
         </member>
@@ -9255,28 +9214,15 @@
         </member>
         <member name="T:GUPS.Obfuscator.Editor.Project.PostAssemblyBuild.Pipeline.Component.Security.AntiTamperingRuntime">
             <summary>
-            Runtime anti-tampering protection system that performs integrity checks.
-            Provides two separate entry points: InitializeMono for Mono builds and InitializeIL2CPP for IL2CPP builds.
-            The build-time AntiTamperingComponent selects and clones the correct method based on the scripting backend.
-            
-            Each method is fully self-contained (no cross-method calls, no static fields) because
-            CloneHelper.TryToCloneMethod clones a single method and does not remap cross-method call targets.
+            Runtime anti-tampering protection system that performs assembly integrity checks.
+            Validates assembly hashes at runtime to detect unauthorized modifications.
             </summary>
         </member>
-        <member name="M:GUPS.Obfuscator.Editor.Project.PostAssemblyBuild.Pipeline.Component.Security.AntiTamperingRuntime.InitializeMono">
+        <member name="M:GUPS.Obfuscator.Editor.Project.PostAssemblyBuild.Pipeline.Component.Security.AntiTamperingRuntime.Initialize">
             <summary>
-            Mono anti-tampering entry point. Validates the integrity of the managed assembly on disk
-            by comparing its SHA256 hash against a stored reference hash in StreamingAssets/Cache.
-            Uses Assembly.GetExecutingAssembly() and Assembly.Location to find the assembly file.
-            </summary>
-        </member>
-        <member name="M:GUPS.Obfuscator.Editor.Project.PostAssemblyBuild.Pipeline.Component.Security.AntiTamperingRuntime.InitializeIL2CPP">
-            <summary>
-            IL2CPP anti-tampering entry point. Validates the integrity of native binaries
-            (GameAssembly, baselib, UnityPlayer) by comparing their SHA256 hashes against
-            stored reference hashes in StreamingAssets/Cache.
-            Does NOT use System.Reflection.Assembly (unreliable under IL2CPP).
-            Uses Application.platform for extension/path resolution and Application.dataPath for binary locations.
+            Initializes anti-tampering protection. Performs assembly integrity 
+            verification by comparing calculated hashes with stored reference 
+            hashes to detect tampering attempts.
             </summary>
         </member>
         <member name="T:GUPS.Obfuscator.Editor.Project.PostAssemblyBuild.Pipeline.Component.Security.SignAssemblyComponent">
@@ -11037,9 +10983,8 @@
         <member name="T:GUPS.Obfuscator.Editor.Project.PostBuild.Pipeline.Component.Security.AntiTamperingComponent">
             <summary>
             Second step of two-phase anti-tampering protection system.
-            Post-build component that generates integrity hash files for all final assemblies (Mono)
-            or native binaries (IL2CPP). Creates verification data used by runtime anti-tampering
-            checks to detect code modification.
+            Post-build component that generates integrity hash files for all final assemblies.
+            Creates verification data used by runtime anti-tampering checks to detect code modification.
             </summary>
         </member>
         <member name="P:GUPS.Obfuscator.Editor.Project.PostBuild.Pipeline.Component.Security.AntiTamperingComponent.Name">
@@ -11066,68 +11011,21 @@
         </member>
         <member name="M:GUPS.Obfuscator.Editor.Project.PostBuild.Pipeline.Component.Security.AntiTamperingComponent.OnPostBuild">
             <summary>
-            Generates SHA256 hash files for the final build output.
-            For Mono builds, hashes all managed assemblies in the Managed directory.
-            For IL2CPP builds, hashes the native binaries (GameAssembly, baselib, UnityPlayer).
+            Generates SHA256 hash files for all assemblies in the final build directory.
             Creates verification data in StreamingAssets/Cache for runtime integrity checks.
             </summary>
             <returns>True if hash generation completed successfully; otherwise, false.</returns>
         </member>
-        <member name="M:GUPS.Obfuscator.Editor.Project.PostBuild.Pipeline.Component.Security.AntiTamperingComponent.OnPostBuild_Mono">
+        <member name="M:GUPS.Obfuscator.Editor.Project.PostBuild.Pipeline.Component.Security.AntiTamperingComponent.OnPostBuild_CreateAssemblyHashFile(System.String,System.String)">
             <summary>
-            Generates SHA256 hash files for all managed assemblies in a Mono build.
-            </summary>
-            <returns>True if hash generation completed successfully; otherwise, false.</returns>
-        </member>
-        <member name="M:GUPS.Obfuscator.Editor.Project.PostBuild.Pipeline.Component.Security.AntiTamperingComponent.OnPostBuild_Mono_CreateAssemblyHashFile(System.String,System.String)">
-            <summary>
-            Calculates SHA256 hash of a managed assembly and creates a verification file.
-            The hash file name is derived from the assembly's full name hash code.
+            Calculates SHA256 hash of an assembly and creates verification file.
             </summary>
             <param name="_StreamingAssetsDirectory">Target directory for hash files.</param>
             <param name="_AssemblyPath">Path to assembly file to hash.</param>
         </member>
-        <member name="F:GUPS.Obfuscator.Editor.Project.PostBuild.Pipeline.Component.Security.AntiTamperingComponent.IL2CPP_RequiredBinaries">
-            <summary>
-            Native binary base names to hash for IL2CPP builds.
-            GameAssembly contains all compiled game code and is required.
-            baselib and UnityPlayer are optional (may be statically linked in some configurations).
-            </summary>
-        </member>
-        <member name="M:GUPS.Obfuscator.Editor.Project.PostBuild.Pipeline.Component.Security.AntiTamperingComponent.OnPostBuild_IL2CPP">
-            <summary>
-            Generates SHA256 hash files for native binaries in an IL2CPP build.
-            Hashes GameAssembly (required), baselib, and UnityPlayer (optional) for the target platform.
-            </summary>
-            <returns>True if hash generation completed successfully; otherwise, false.</returns>
-        </member>
-        <member name="M:GUPS.Obfuscator.Editor.Project.PostBuild.Pipeline.Component.Security.AntiTamperingComponent.OnPostBuild_IL2CPP_GetBinaryDirectory">
-            <summary>
-            Returns the directory containing native binaries for the current IL2CPP build target.
-            Windows/Linux: build root directory (next to the executable).
-            macOS: inside the .app bundle at Contents/Frameworks.
-            </summary>
-            <returns>Path to the directory containing native binaries, or null if unsupported.</returns>
-        </member>
-        <member name="M:GUPS.Obfuscator.Editor.Project.PostBuild.Pipeline.Component.Security.AntiTamperingComponent.OnPostBuild_IL2CPP_GetBinaryExtension">
-            <summary>
-            Returns the platform-specific file extension for native binaries.
-            </summary>
-            <returns>".dll" for Windows, ".so" for Linux, ".dylib" for macOS.</returns>
-        </member>
-        <member name="M:GUPS.Obfuscator.Editor.Project.PostBuild.Pipeline.Component.Security.AntiTamperingComponent.OnPostBuild_IL2CPP_CreateBinaryHashFile(System.String,System.String)">
-            <summary>
-            Calculates SHA256 hash of a native binary and creates a verification file.
-            The hash file name is derived from the binary's base name (without extension) hash code,
-            matching the convention used by the runtime verification.
-            </summary>
-            <param name="_StreamingAssetsDirectory">Target directory for hash files.</param>
-            <param name="_BinaryPath">Full path to the native binary to hash.</param>
-        </member>
         <member name="M:GUPS.Obfuscator.Editor.Project.PostBuild.Pipeline.Component.Security.AntiTamperingComponent.OnPostBuild_GetBuildDataDirectory">
             <summary>
             Gets the build data directory path based on the target platform.
-            Used by both Mono (for Managed/ directory) and IL2CPP (for StreamingAssets output).
             </summary>
             <returns>Path to the data directory containing assemblies and resources.</returns>
         </member>
@@ -11412,25 +11310,22 @@
         <member name="M:GUPS.Obfuscator.Editor.Project.PreBuild.Pipeline.Component.AnalyseAnimationComponent.OnAnalyse_Assets(GUPS.Obfuscator.Editor.Assets.Unity.UnityAssetReference)">
             <summary>
             Process the asset and search for animation methods.
-            Uses a file-based cache to skip re-analysis when the asset content has not changed.
             </summary>
             <param name="_UnityAssetReference">The asset reference to process.</param>
             <returns>True if the asset was processed successfully; otherwise false.</returns>
         </member>
-        <member name="M:GUPS.Obfuscator.Editor.Project.PreBuild.Pipeline.Component.AnalyseAnimationComponent.OnAnalyse_Assets_ModelFile(GUPS.Obfuscator.Editor.Assets.Unity.UnityAssetReference,System.Collections.Generic.List{System.String}@)">
+        <member name="M:GUPS.Obfuscator.Editor.Project.PreBuild.Pipeline.Component.AnalyseAnimationComponent.OnAnalyse_Assets_ModelFile(GUPS.Obfuscator.Editor.Assets.Unity.UnityAssetReference)">
             <summary>
             Analyse model files and search for animation methods.
             </summary>
             <param name="_UnityAssetReference">The asset reference to process.</param>
-            <param name="_FoundMethods">The animation methods found in this specific asset.</param>
             <returns>True if the asset was processed successfully; otherwise false.</returns>
         </member>
-        <member name="M:GUPS.Obfuscator.Editor.Project.PreBuild.Pipeline.Component.AnalyseAnimationComponent.OnAnalyse_Assets_AnimationClip(GUPS.Obfuscator.Editor.Assets.Unity.UnityAssetReference,System.Collections.Generic.List{System.String}@)">
+        <member name="M:GUPS.Obfuscator.Editor.Project.PreBuild.Pipeline.Component.AnalyseAnimationComponent.OnAnalyse_Assets_AnimationClip(GUPS.Obfuscator.Editor.Assets.Unity.UnityAssetReference)">
             <summary>
             Analyse animation clip files and search for animation methods.
             </summary>
             <param name="_UnityAssetReference">The asset reference to process.</param>
-            <param name="_FoundMethods">The animation methods found in this specific asset.</param>
             <returns>True if the asset was processed successfully; otherwise false.</returns>
         </member>
         <member name="M:GUPS.Obfuscator.Editor.Project.PreBuild.Pipeline.Component.AnalyseAnimationComponent.GetMethodsInAnimationClip(UnityEngine.AnimationClip)">
@@ -11440,12 +11335,11 @@
             <param name="_AnimationClip"></param>
             <returns></returns>
         </member>
-        <member name="M:GUPS.Obfuscator.Editor.Project.PreBuild.Pipeline.Component.AnalyseAnimationComponent.OnAnalyse_Assets_AnimationController(GUPS.Obfuscator.Editor.Assets.Unity.UnityAssetReference,System.Collections.Generic.List{GUPS.Obfuscator.Editor.Assembly.Mono.Member.Key.TypeKey}@)">
+        <member name="M:GUPS.Obfuscator.Editor.Project.PreBuild.Pipeline.Component.AnalyseAnimationComponent.OnAnalyse_Assets_AnimationController(GUPS.Obfuscator.Editor.Assets.Unity.UnityAssetReference)">
             <summary>
             Analyse animation controller files and search for StateMachineBehaviours.
             </summary>
             <param name="_UnityAssetReference">The asset reference to process.</param>
-            <param name="_FoundTypes">The StateMachineBehaviour types found in this specific asset.</param>
             <returns>True if the asset was processed successfully; otherwise false.</returns>
         </member>
         <member name="M:GUPS.Obfuscator.Editor.Project.PreBuild.Pipeline.Component.AnalyseAnimationComponent.OnProcess_Assets(GUPS.Obfuscator.Editor.Assets.Unity.UnityAssetReference)">

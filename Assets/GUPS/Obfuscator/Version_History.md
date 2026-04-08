@@ -1,33 +1,5 @@
 ﻿# Version History:
 
-## 2026.2.0: Security & Performance - Update
-Features:
-- [Feature-2026-2] Add file-based asset analysis cache using hash validation to skip re-analysis of unchanged assets across builds. The cache is stored in *GUPS/Obfuscator/Cache/Assets*. This reduces the build time, for a second or third etc. build.
-- [Feature-2026-1] Added IL2CPP anti-tampering (code integrity check) support for standalone builds (Windows, Linux, macOS). Mono and IL2CPP are now both supported.
-
-Note: Added a *.gitignore* under *GUPS\Obfuscator*. I recommend you to keep it or you have to add the following directories to your global gitignore:
-```
-**/GUPS/Obfuscator/Temp/
-**/GUPS/Obfuscator/Cache/
-```
-
-## 2026.1.4: Maintenance - Update
-Bug Fixes:
-- [Bug-2026-6] In Addressables, AssetBundleRequestOptions do not always have a fixed order in the catalog.json file, causing a crc mismatch. This has been fixed [thanks Masakami].
-
-## 2026.1.3: Maintenance - Update
-Improvements:
-- [Imprv-2026-4] Optimization of string obfuscation to reduce build size by reusing obfuscated strings that have the same value [thanks Pierre].
-
-## 2026.1.2: Maintenance - Update
-Improvements:
-- [Imprv-2026-3] When adding namespaces that are to be skipped by obfuscation (or vice versa included), empty entries are now filtered out, those are always added by mistake [thanks Gleb].
-- [Imprv-2026-2] Refactoring of string obfuscation to split string methods into multiple types, so that the 65k method limit of IL2CPP does not cause problems, also optimized performance when reading the string [thanks Pierre].
-
-Bug Fixes:
-- [Bug-2026-5] Fixed a burst compiler error. Burst error BC1347: Invalid first argument (code: Call) of string.Format(format, ...). Expecting a const/literal string. Burst compiled code is not valid with string obfuscation, so the string obfuscation module checks for that [thanks Gleb & Lee].
-- [Bug-2026-4] Fixed an issue where post-processing (Unity 6000.2 and above) might trigger an exception: Unsupported asset class type name '...'[thanks Nikita].
-
 ## 2026.1.1: Maintenance - Update
 Improvements:
 - [Imprv-2026-1] Scenes must be added to the build settings to be included in the obfuscator analysis. Unanalyzed scenes can lead to incorrectly functioning UI events (or similiar). Now, a warning is displayed if a scene is skipped when it is opened in the editor but is not included in the build settings [thanks Jiyong].
