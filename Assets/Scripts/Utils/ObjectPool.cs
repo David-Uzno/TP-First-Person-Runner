@@ -21,7 +21,7 @@ public class ObjectPool : MonoBehaviour
     private readonly Dictionary<GameObject, Queue<GameObject>> _pools = new();
     private readonly Dictionary<GameObject, GameObject> _ownerPrefabs = new();
 
-    void Awake()
+    private void Awake()
     {
         if (_instance == null)
         {
@@ -43,7 +43,7 @@ public class ObjectPool : MonoBehaviour
             instance.SetActive(true);
             return instance;
         }
-        GameObject spawnedGameObject = Instantiate(prefab, position, rotation);
+        GameObject spawnedGameObject = Instantiate(prefab, position, rotation, transform);
         _ownerPrefabs[spawnedGameObject] = prefab;
         return spawnedGameObject;
     }
