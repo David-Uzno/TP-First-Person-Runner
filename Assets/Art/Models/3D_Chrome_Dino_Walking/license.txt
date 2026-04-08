@@ -1,0 +1,11 @@
+Model Information:
+* title:	3D Chrome Dino Walking
+* source:	https://sketchfab.com/3d-models/3d-chrome-dino-walking-fb6f49c248494011b6b9cac7326f1a91
+* author:	MayMax (https://sketchfab.com/MayMax)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "3D Chrome Dino Walking" (https://sketchfab.com/3d-models/3d-chrome-dino-walking-fb6f49c248494011b6b9cac7326f1a91) by MayMax (https://sketchfab.com/MayMax) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

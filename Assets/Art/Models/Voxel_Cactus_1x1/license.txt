@@ -1,0 +1,11 @@
+Model Information:
+* title:	Voxel Cactus 1x1
+* source:	https://sketchfab.com/3d-models/voxel-cactus-1x1-047908696bf644909b2eedb651163b24
+* author:	MayMax (https://sketchfab.com/MayMax)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Voxel Cactus 1x1" (https://sketchfab.com/3d-models/voxel-cactus-1x1-047908696bf644909b2eedb651163b24) by MayMax (https://sketchfab.com/MayMax) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
