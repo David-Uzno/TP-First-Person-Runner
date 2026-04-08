@@ -604,11 +604,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe0c08fddd047cf4eb7340f0dccca7bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemySpawner
-  enemyPrefab: {fileID: 8265609002487802450, guid: d2c0490285d9b994ba01740847ff9765, type: 3}
-  spawnTimeMin: 1
-  spawnTimeMax: 3
-  nextSpawnDelay: 0.5
-  initialPoolSize: 5
+  _enemyPrefab: {fileID: 8265609002487802450, guid: d2c0490285d9b994ba01740847ff9765, type: 3}
+  _spawnTimeMin: 1
+  _spawnTimeMax: 3
+  _nextSpawnDelay: 0.5
+  _initialPoolSize: 5
 --- !u!4 &1926892015
 Transform:
   m_ObjectHideFlags: 0

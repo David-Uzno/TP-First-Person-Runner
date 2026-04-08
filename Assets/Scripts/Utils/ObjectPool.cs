@@ -10,7 +10,7 @@ public class ObjectPool : MonoBehaviour
         {
             if (_instance == null)
             {
-                GameObject gameObjectPool = new GameObject("ObjectPool");
+                GameObject gameObjectPool = new("ObjectPool");
                 _instance = gameObjectPool.AddComponent<ObjectPool>();
                 DontDestroyOnLoad(gameObjectPool);
             }
@@ -18,17 +18,14 @@ public class ObjectPool : MonoBehaviour
         }
     }
 
-    private readonly Dictionary<GameObject, Queue<GameObject>> _pools = new Dictionary<GameObject, Queue<GameObject>>();
-    private Transform _poolParent;
-    private readonly Dictionary<GameObject, GameObject> _ownerPrefabs = new Dictionary<GameObject, GameObject>();
+    private readonly Dictionary<GameObject, Queue<GameObject>> _pools = new();
+    private readonly Dictionary<GameObject, GameObject> _ownerPrefabs = new();
 
     void Awake()
     {
         if (_instance == null)
         {
             _instance = this;
-            _poolParent = new GameObject("PoolItems").transform;
-            _poolParent.SetParent(transform);
         }
         else if (_instance != this)
         {
@@ -42,7 +39,6 @@ public class ObjectPool : MonoBehaviour
         if (_pools.TryGetValue(prefab, out Queue<GameObject> queue) && queue.Count > 0)
         {
             GameObject instance = queue.Dequeue();
-            instance.transform.SetParent(null);
             instance.transform.SetPositionAndRotation(position, rotation);
             instance.SetActive(true);
             return instance;
@@ -61,7 +57,7 @@ public class ObjectPool : MonoBehaviour
             return;
         }
         instance.SetActive(false);
-        instance.transform.SetParent(_poolParent);
+        instance.transform.SetParent(transform);
         if (!_pools.TryGetValue(prefab, out Queue<GameObject> queue))
         {
             queue = new Queue<GameObject>();
@@ -80,7 +76,7 @@ public class ObjectPool : MonoBehaviour
         }
         for (int i = 0; i < count; i++)
         {
-            GameObject prefabPool = Instantiate(prefab, _poolParent);
+            GameObject prefabPool = Instantiate(prefab, transform);
             _ownerPrefabs[prefabPool] = prefab;
             prefabPool.SetActive(false);
             queue.Enqueue(prefabPool);
