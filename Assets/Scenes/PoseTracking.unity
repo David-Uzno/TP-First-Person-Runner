@@ -145,8 +145,8 @@ Transform:
   m_GameObject: {fileID: 290216387}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -960.00006, y: -539.73334, z: 0}
-  m_LocalScale: {x: 2.1333334, y: 2.1333334, z: 2.1333334}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1133701623}
@@ -259,8 +259,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1810583025}
-  - component: {fileID: 1810583026}
   - component: {fileID: 1810583028}
+  - component: {fileID: 1810583035}
   - component: {fileID: 1810583027}
   - component: {fileID: 1810583029}
   - component: {fileID: 1810583030}
@@ -280,31 +280,17 @@ RectTransform:
   m_GameObject: {fileID: 1810583024}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.33, y: 0.33, z: 0.33}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 1810583032}
   m_Father: {fileID: 1133701623}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: -675, y: 380}
+  m_SizeDelta: {x: -350.00006, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1810583026
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1810583024}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 86710e43de46f6f4bac7c8e50813a599, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.AspectRatioFitter
-  m_AspectMode: 3
-  m_AspectRatio: 1.7777778
 --- !u!114 &1810583027
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -352,6 +338,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 68e17658dee37754a893cf403f6cc307, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _cameraImage: {fileID: 1810583027}
   _skeletonGraphic: {fileID: 1810583034}
 --- !u!114 &1810583030
 MonoBehaviour:
@@ -428,6 +415,20 @@ MonoBehaviour:
   _jointSize: 10
   _lineThickness: 6
   _minimumConfidence: 0.25
+--- !u!114 &1810583035
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1810583024}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86710e43de46f6f4bac7c8e50813a599, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.AspectRatioFitter
+  m_AspectMode: 1
+  m_AspectRatio: 1.9623122
 --- !u!1 &1026659668645041485
 GameObject:
   m_ObjectHideFlags: 0
@@ -483,10 +484,10 @@ Rigidbody:
     m_Bits: 0
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
-  m_UseGravity: 0
+  m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 112
   m_CollisionDetection: 0
 --- !u!4 &1529914215067540203
 Transform:
@@ -523,7 +524,7 @@ MeshCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 5
-  m_Convex: 0
+  m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!20 &2223935078314142408
@@ -693,7 +694,7 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -745,7 +746,7 @@ GameObject:
   - component: {fileID: 1722136648704364403}
   m_Layer: 0
   m_Name: Plane
-  m_TagString: Untagged
+  m_TagString: Plataform
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -762,6 +763,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa19995c078e0de4882020a3cb947520, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player
+  _jumpForce: 15
+  _rigidbody: {fileID: 1340371715436068152}
 --- !u!23 &8216118649913049803
 MeshRenderer:
   m_ObjectHideFlags: 0
