@@ -8,7 +8,7 @@ namespace TPRunner3D.PoseTracking
     {
         [SerializeField] private int _requestedWidth = 1280;
         [SerializeField] private int _requestedHeight = 720;
-        [SerializeField] private int _requestedFps = 30;
+        [SerializeField] private int _requestedFPS = 30;
 
         private WebCamTexture _texture;
         private bool _isFrontFacing;
@@ -71,7 +71,7 @@ namespace TPRunner3D.PoseTracking
             }
             WebCamDevice selectedDevice = SelectDevice(devices);
             _isFrontFacing = selectedDevice.isFrontFacing;
-            _texture = new WebCamTexture(selectedDevice.name, _requestedWidth, _requestedHeight, _requestedFps);
+            _texture = new WebCamTexture(selectedDevice.name, _requestedWidth, _requestedHeight, _requestedFPS);
             _texture.Play();
         }
 
