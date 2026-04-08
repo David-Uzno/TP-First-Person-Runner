@@ -15,6 +15,10 @@ namespace TPRunner3D.PoseTracking
 
         private readonly PoseSkeleton _pose = new();
 
+        public PoseSkeleton CurrentPose => _pose;
+
+        public float LastPoseUpdateTime { get; private set; } = float.NegativeInfinity;
+
         private RawImage _cameraImage;
         private AspectRatioFitter _aspectRatioFitter;
         private PoseWebcamSource _webcamSource;
@@ -59,6 +63,7 @@ namespace TPRunner3D.PoseTracking
             _nextInferenceTime = Time.unscaledTime + InferenceIntervalSeconds;
             if (_estimator.TryEstimate(_webcamSource.Texture, _pose))
             {
+                LastPoseUpdateTime = Time.unscaledTime;
                 _skeletonGraphic.Refresh();
             }
         }
