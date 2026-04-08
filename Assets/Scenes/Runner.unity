@@ -119,63 +119,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1001 &312648440
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 3615310060782387716, guid: d2c0490285d9b994ba01740847ff9765, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3615310060782387716, guid: d2c0490285d9b994ba01740847ff9765, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3615310060782387716, guid: d2c0490285d9b994ba01740847ff9765, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 50
-      objectReference: {fileID: 0}
-    - target: {fileID: 3615310060782387716, guid: d2c0490285d9b994ba01740847ff9765, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3615310060782387716, guid: d2c0490285d9b994ba01740847ff9765, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3615310060782387716, guid: d2c0490285d9b994ba01740847ff9765, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3615310060782387716, guid: d2c0490285d9b994ba01740847ff9765, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3615310060782387716, guid: d2c0490285d9b994ba01740847ff9765, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3615310060782387716, guid: d2c0490285d9b994ba01740847ff9765, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3615310060782387716, guid: d2c0490285d9b994ba01740847ff9765, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8265609002487802450, guid: d2c0490285d9b994ba01740847ff9765, type: 3}
-      propertyPath: m_Name
-      value: Voxel_Cactus_1x1
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: d2c0490285d9b994ba01740847ff9765, type: 3}
 --- !u!1 &396277711
 GameObject:
   m_ObjectHideFlags: 0
@@ -302,6 +245,7 @@ GameObject:
   - component: {fileID: 1289267347}
   - component: {fileID: 1289267346}
   - component: {fileID: 1289267350}
+  - component: {fileID: 1289267351}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -430,6 +374,18 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &1289267351
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1289267345}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa19995c078e0de4882020a3cb947520, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Player
 --- !u!1 &1713273711
 GameObject:
   m_ObjectHideFlags: 0
@@ -648,6 +604,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe0c08fddd047cf4eb7340f0dccca7bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemySpawner
+  enemyPrefab: {fileID: 8265609002487802450, guid: d2c0490285d9b994ba01740847ff9765, type: 3}
+  spawnTimeMin: 1
+  spawnTimeMax: 3
+  nextSpawnDelay: 0.5
+  initialPoolSize: 5
 --- !u!4 &1926892015
 Transform:
   m_ObjectHideFlags: 0
@@ -670,5 +631,4 @@ SceneRoots:
   - {fileID: 1713273713}
   - {fileID: 1289267349}
   - {fileID: 1926892015}
-  - {fileID: 312648440}
   - {fileID: 396277715}

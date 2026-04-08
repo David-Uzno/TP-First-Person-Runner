@@ -6,7 +6,6 @@ public class Enemy : MonoBehaviour
     [Header("Stats")]
     [SerializeField] private Vector3 _targetPosition = Vector3.zero;
     [SerializeField] private float _moveSpeed = 5f;
-    [SerializeField] private Vector3 _resetPosition = Vector3.zero;
 
     [Header("Refences")]
     [SerializeField] private Rigidbody _rigidbody;
@@ -35,16 +34,6 @@ public class Enemy : MonoBehaviour
         {
             Vector3 newPos = currentPos + toTarget.normalized * distThisFrame;
             _rigidbody.MovePosition(newPos);
-        }
-    }
-
-    public void ResetPosition()
-    {
-        transform.position = _resetPosition;
-        if (_rigidbody != null)
-        {
-            _rigidbody.position = _resetPosition;
-            _rigidbody.Sleep();
         }
     }
 }
