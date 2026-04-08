@@ -5,12 +5,11 @@ namespace TPRunner3D.PoseTracking
 {
     [DisallowMultipleComponent]
     [RequireComponent(typeof(PoseWebcamSource))]
-    [RequireComponent(typeof(RawImage))]
-    [RequireComponent(typeof(AspectRatioFitter))]
     public sealed class PoseTrackingController : MonoBehaviour
     {
         private const float InferenceIntervalSeconds = 1f / 20f;
 
+        [SerializeField] private RawImage _cameraImage;
         [SerializeField] private PoseSkeletonGraphic _skeletonGraphic;
 
         private readonly PoseSkeleton _pose = new();
@@ -19,25 +18,27 @@ namespace TPRunner3D.PoseTracking
 
         public float LastPoseUpdateTime { get; private set; } = float.NegativeInfinity;
 
-        private RawImage _cameraImage;
-        private AspectRatioFitter _aspectRatioFitter;
         private PoseWebcamSource _webcamSource;
         private MoveNetPoseEstimator _estimator;
         private float _nextInferenceTime;
 
         private void Start()
         {
-            _cameraImage = GetComponent<RawImage>();
-            _aspectRatioFitter = GetComponent<AspectRatioFitter>();
             _webcamSource = GetComponent<PoseWebcamSource>();
 
-            if (_cameraImage == null || _aspectRatioFitter == null || _webcamSource == null || _skeletonGraphic == null)
+            if (_cameraImage == null || _webcamSource == null || _skeletonGraphic == null)
             {
-                Debug.LogError("PoseTrackingController requiere RawImage, AspectRatioFitter, PoseWebcamSource y PoseSkeletonGraphic.");
+                Debug.LogError("PoseTrackingController requiere RawImage, PoseWebcamSource y PoseSkeletonGraphic.");
                 enabled = false;
                 return;
             }
 
+            if (_cameraImage.TryGetComponent(out AspectRatioFitter aspectRatioFitter))
+            {
+                aspectRatioFitter.enabled = false;
+            }
+
+            _cameraImage.uvRect = new Rect(0f, 0f, 1f, 1f);
             _skeletonGraphic.SetPose(_pose);
 
             if (!MoveNetPoseEstimator.TryCreateDefault(out _estimator, out string startupError))
@@ -75,7 +76,7 @@ namespace TPRunner3D.PoseTracking
 
         private void UpdateView()
         {
-            if (_webcamSource == null || _cameraImage == null || _aspectRatioFitter == null)
+            if (_webcamSource == null || _cameraImage == null)
             {
                 return;
             }
@@ -90,22 +91,16 @@ namespace TPRunner3D.PoseTracking
                 return;
             }
 
-            RectTransform cameraTransform = _cameraImage.rectTransform;
-            _aspectRatioFitter.aspectRatio = _webcamSource.DisplayAspectRatio;
-            cameraTransform.localEulerAngles = new Vector3(0f, 0f, -_webcamSource.RotationAngle);
+            float width = _webcamSource.IsFrontFacing ? -1f : 1f;
+            float height = _webcamSource.IsVerticallyMirrored ? -1f : 1f;
+            float x = width < 0f ? 1f : 0f;
+            float y = height < 0f ? 1f : 0f;
 
-            Vector3 scale = Vector3.one;
-            if (_webcamSource.IsVerticallyMirrored)
+            Rect targetUv = new Rect(x, y, width, height);
+            if (_cameraImage.uvRect != targetUv)
             {
-                scale.y *= -1f;
+                _cameraImage.uvRect = targetUv;
             }
-
-            if (_webcamSource.IsFrontFacing)
-            {
-                scale.x *= -1f;
-            }
-
-            cameraTransform.localScale = scale;
         }
     }
 }
