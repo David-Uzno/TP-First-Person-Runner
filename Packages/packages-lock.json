@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "com.3dconnexion.3dxunity3d": {
-      "version": "file:C:/Program Files/3Dconnexion/3DxWare/3DxUnity3D/src",
+      "version": "file:D:/Biblioteca/Documentos/3dconnexion/3DxWare/3DxUnity3D/src",
       "depth": 0,
       "source": "local",
       "dependencies": {}
@@ -156,9 +156,26 @@
       "dependencies": {},
       "url": "https://packages.unity.com"
     },
+    "com.unity.platformtoolkit": {
+      "version": "1.0.1",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.sharp-zip-lib": "1.4.0",
+        "com.unity.modules.jsonserialize": "1.0.0"
+      },
+      "url": "https://packages.unity.com"
+    },
     "com.unity.settings-manager": {
       "version": "2.1.1",
       "depth": 2,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.sharp-zip-lib": {
+      "version": "1.4.1",
+      "depth": 1,
       "source": "registry",
       "dependencies": {},
       "url": "https://packages.unity.com"

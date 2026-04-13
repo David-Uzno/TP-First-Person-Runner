@@ -1,17 +1,16 @@
+using System;
+using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 
 [RequireComponent(typeof(TMP_Text))]
 public class Record : MonoBehaviour
 {
-	private readonly string _playerPrefsKey = "Record";
-
 	[Header("References")]
 	[SerializeField] private Score _score;
 	[SerializeField] private TMP_Text _recordText;
 
 	private int _scoreValue;
-    private int _scoreDigits;
 
 	private bool EnsureRecordTextAssigned()
 	{
@@ -45,29 +44,35 @@ public class Record : MonoBehaviour
 		return true;
 	}
 
-	private void Start()
+	private async void Start()
+	{
+		await InitializeRecordAsync();
+	}
+
+	private async Task InitializeRecordAsync()
 	{
 		if (!EnsureRecordTextAssigned()) return;
 
-		if (PlayerPrefs.HasKey(_playerPrefsKey))
+		try
 		{
-			LoadSavedRecord();
+			int? value = await RecordService.LoadRecordAsync();
+
+			if (value.HasValue)
+			{
+				_scoreValue = value.Value;
+				_recordText.gameObject.SetActive(true);
+				RefreshText();
+			}
+			else
+			{
+				HideRecordText();
+			}
 		}
-		else
+		catch (Exception exception)
 		{
+			Debug.LogWarning($"Record: No se pudo cargar el récord local. {exception.Message}");
 			HideRecordText();
 		}
-	}
-
-	private void LoadSavedRecord()
-	{
-		int saved = PlayerPrefs.GetInt(_playerPrefsKey);
-
-		if (!EnsureScoreAssigned()) return;
-
-		_scoreValue = saved;
-		_recordText.gameObject.SetActive(true);
-		RefreshText();
 	}
 
 	private void HideRecordText()
@@ -75,31 +80,38 @@ public class Record : MonoBehaviour
 		_recordText.gameObject.SetActive(false);
 	}
 
-	public void SyncFromScore()
+	public async Task SyncFromScoreAsync()
 	{
-		if (!EnsureScoreAssigned())
-			return;
+		if (!EnsureScoreAssigned()) return;
 
-		int current = _score.Value;
-
-		int saved;
-		if (PlayerPrefs.HasKey(_playerPrefsKey))
+		try
 		{
-			saved = PlayerPrefs.GetInt(_playerPrefsKey);
-		}
-		else
-		{
-			saved = int.MinValue;
-		}
+			int current = _score.Value;
+			bool updated = await RecordService.TryUpdateRecordAsync(current);
 
-		if (current <= saved)
-		{
-			return;
-		}
+			if (!updated)
+			{
+				return;
+			}
 
-		_scoreValue = current;
-		RefreshText();
-		SaveScore();
+			_scoreValue = current;
+
+			if (!EnsureRecordTextAssigned())
+			{
+				Debug.LogWarning("Record: TMP_Text no asignado, no se puede mostrar el récord.");
+			}
+			else
+			{
+				_recordText.gameObject.SetActive(true);
+				RefreshText();
+			}
+
+			await GameProgressSaver.SaveRecordAsync(_scoreValue);
+		}
+		catch (Exception exception)
+		{
+			Debug.LogWarning($"Record: No se pudo guardar el récord local. {exception.Message}");
+		}
 	}
 
 	private void RefreshText()
@@ -107,13 +119,7 @@ public class Record : MonoBehaviour
         if (!EnsureRecordTextAssigned()) return;
         if (!EnsureScoreAssigned()) return;
 
-		_scoreDigits = _score.Digits;
-		_recordText.text = _scoreValue.ToString("D" + _scoreDigits);
+		int scoreDigits = _score.Digits;
+		_recordText.text = _scoreValue.ToString("D" + scoreDigits);
 	}
-
-    private void SaveScore()
-    {
-		PlayerPrefs.SetInt(_playerPrefsKey, _scoreValue);
-		PlayerPrefs.Save();
-    }
 }

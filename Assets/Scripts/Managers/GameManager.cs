@@ -22,7 +22,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void GameOver()
+    public async void GameOver()
     {
         Time.timeScale = 0f;
 
@@ -45,7 +45,6 @@ public class GameManager : MonoBehaviour
 			}
 		}
 
-        _record.SyncFromScore();
-        
+        await _record.SyncFromScoreAsync();
     }
 }
