@@ -1,4 +1,4 @@
-using Unity.VisualScripting;
+using System;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -7,6 +7,7 @@ public class GameManager : MonoBehaviour
 
     [Header("UI")]
     [SerializeField] private Record _record;
+    [SerializeField] private GameObject _gameOver;
 
     private void Awake()
     {
@@ -23,6 +24,17 @@ public class GameManager : MonoBehaviour
 
     public void GameOver()
     {
+        Time.timeScale = 0f;
+
+        if (_gameOver != null)
+        {
+            _gameOver.SetActive(true);
+        }
+        else
+		{
+            Debug.LogWarning("GameManager: Componente de Record no encontrado en la escena.");
+		}
+
 		if (_record == null)
 		{
 			_record = FindFirstObjectByType<Record>();
@@ -34,6 +46,6 @@ public class GameManager : MonoBehaviour
 		}
 
         _record.SyncFromScore();
-        Time.timeScale = 0f;
+        
     }
 }
