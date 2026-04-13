@@ -3,9 +3,11 @@ using TPRunner3D.PoseTracking;
 
 public class PlayerMovement : MonoBehaviour
 {
+    [Header ("Jump")]
     [SerializeField] private float _jumpForce = 4f;
     private bool _isJumping;
     private PoseDetectorVectorY _poseDetectorVectorY;
+    [SerializeField] private AudioClip _audioClip;
 
     [Header("References")]
     [SerializeField] private Rigidbody _rigidbody;
@@ -33,6 +35,11 @@ public class PlayerMovement : MonoBehaviour
         if (_isJumping == false)
         {
             _rigidbody.AddForce(_jumpForce * 10 * Vector3.up);
+            if (_audioClip != null)
+            {
+                AudioSource.PlayClipAtPoint(_audioClip, transform.position);
+            }
+
             _isJumping = true;
         }
     }
