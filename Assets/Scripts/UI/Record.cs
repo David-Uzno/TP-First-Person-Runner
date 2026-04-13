@@ -105,8 +105,6 @@ public class Record : MonoBehaviour
 				_recordText.gameObject.SetActive(true);
 				RefreshText();
 			}
-
-			await GameProgressSaver.SaveRecordAsync(_scoreValue);
 		}
 		catch (Exception exception)
 		{

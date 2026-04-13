@@ -250,5 +250,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
   _targetPosition: {x: 0, y: 0, z: -7}
-  _moveSpeed: 5
+  _moveSpeed: 100
   _rigidbody: {fileID: -5844543834627148185}
