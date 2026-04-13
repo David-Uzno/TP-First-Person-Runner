@@ -7,33 +7,52 @@ public class Enemy : MonoBehaviour
     [SerializeField] private Vector3 _targetPosition = Vector3.zero;
     [SerializeField] private float _moveSpeed = 5f;
 
-    [Header("Refences")]
+    [Header("References")]
     [SerializeField] private Rigidbody _rigidbody;
 
-    void Awake()
+    private ObjectPool _objectPool;
+
+    private void Awake()
     {
         _rigidbody = GetComponent<Rigidbody>();
     }
 
-    void FixedUpdate()
+    private void Start()
+    {
+        ObjectPool.TryGetInstance(out _objectPool);
+    }
+
+    private void FixedUpdate()
     {
         MoveTowardsTarget();
     }
 
     private void MoveTowardsTarget()
     {
-        Vector3 currentPos = _rigidbody.position;
-        Vector3 toTarget = _targetPosition - currentPos;
+        Vector3 currentPosition = _rigidbody.position;
+        Vector3 toTarget = _targetPosition - currentPosition;
         float distThisFrame = _moveSpeed * Time.fixedDeltaTime;
 
         if (toTarget.sqrMagnitude <= distThisFrame * distThisFrame)
         {
             _rigidbody.MovePosition(_targetPosition);
+            if (_objectPool == null)
+            {
+                ObjectPool.TryGetInstance(out _objectPool);
+            }
+            if (_objectPool != null)
+            {
+                _objectPool.ReturnToPool(gameObject);
+            }
+            else
+            {
+                gameObject.SetActive(false);
+            }
         }
         else
         {
-            Vector3 newPos = currentPos + toTarget.normalized * distThisFrame;
-            _rigidbody.MovePosition(newPos);
+            Vector3 newPosition = currentPosition + toTarget.normalized * distThisFrame;
+            _rigidbody.MovePosition(newPosition);
         }
     }
 }

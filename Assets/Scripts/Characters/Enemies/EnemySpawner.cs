@@ -14,16 +14,18 @@ public class EnemySpawner : MonoBehaviour
     [Header("Object Pool")]
     [SerializeField] private int _initialPoolSize = 5;
 
+    private ObjectPool _objectPool;
     private Coroutine _spawnRoutine;
 
-    void Start()
+    private void Start()
     {
         if (_enemyPrefab == null)
         {
             Debug.LogWarning("EnemySpawner: no se ha asignado enemyPrefab.", this);
             return;
         }
-        ObjectPool.Instance.Preload(_enemyPrefab, _initialPoolSize);
+        _objectPool = ObjectPool.GetOrCreateInstance(gameObject);
+        _objectPool.Preload(_enemyPrefab, _initialPoolSize);
         _spawnRoutine = StartCoroutine(SpawnLoop());
     }
 
@@ -33,7 +35,14 @@ public class EnemySpawner : MonoBehaviour
         {
             float spawnTime = Random.Range(_spawnTimeMin, _spawnTimeMax);
             yield return new WaitForSeconds(spawnTime);
-            ObjectPool.Instance.Get(_enemyPrefab, transform.position, transform.rotation);
+            if (_objectPool != null)
+            {
+                _objectPool.Get(_enemyPrefab, transform.position, transform.rotation);
+            }
+            else
+            {
+                Instantiate(_enemyPrefab, transform.position, transform.rotation);
+            }
             yield return new WaitForSeconds(_nextSpawnDelay);
         }
     }

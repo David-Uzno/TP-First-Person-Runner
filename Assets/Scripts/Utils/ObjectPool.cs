@@ -4,18 +4,45 @@ using UnityEngine;
 public class ObjectPool : MonoBehaviour
 {
     private static ObjectPool _instance;
-    public static ObjectPool Instance
+
+    public static bool TryGetInstance(out ObjectPool instance)
     {
-        get
+        instance = _instance;
+        return instance != null;
+    }
+
+    public static ObjectPool GetOrCreateInstance(GameObject owner)
+    {
+        if (_instance != null)
         {
-            if (_instance == null)
-            {
-                GameObject gameObjectPool = new("ObjectPool");
-                _instance = gameObjectPool.AddComponent<ObjectPool>();
-                DontDestroyOnLoad(gameObjectPool);
-            }
             return _instance;
         }
+
+        if (owner != null)
+        {
+            ObjectPool ownerPool = owner.GetComponent<ObjectPool>();
+            if (ownerPool != null)
+            {
+                _instance = ownerPool;
+                return _instance;
+            }
+
+            GameObject ownerPoolGameObject = new("ObjectPool");
+            ownerPoolGameObject.transform.SetParent(owner.transform, false);
+            _instance = ownerPoolGameObject.AddComponent<ObjectPool>();
+            return _instance;
+        }
+
+        ObjectPool existingPool = FindFirstObjectByType<ObjectPool>();
+        if (existingPool != null)
+        {
+            _instance = existingPool;
+            return _instance;
+        }
+
+        GameObject gameObjectPool = new("ObjectPool");
+        _instance = gameObjectPool.AddComponent<ObjectPool>();
+        return _instance;
     }
 
     private readonly Dictionary<GameObject, Queue<GameObject>> _pools = new();
@@ -36,12 +63,20 @@ public class ObjectPool : MonoBehaviour
     public GameObject Get(GameObject prefab, Vector3 position, Quaternion rotation)
     {
         if (prefab == null) return null;
-        if (_pools.TryGetValue(prefab, out Queue<GameObject> queue) && queue.Count > 0)
+        if (_pools.TryGetValue(prefab, out Queue<GameObject> queue))
         {
-            GameObject instance = queue.Dequeue();
-            instance.transform.SetPositionAndRotation(position, rotation);
-            instance.SetActive(true);
-            return instance;
+            while (queue.Count > 0)
+            {
+                GameObject instance = queue.Dequeue();
+                if (instance == null)
+                {
+                    continue;
+                }
+
+                instance.transform.SetPositionAndRotation(position, rotation);
+                instance.SetActive(true);
+                return instance;
+            }
         }
         GameObject spawnedGameObject = Instantiate(prefab, position, rotation, transform);
         _ownerPrefabs[spawnedGameObject] = prefab;
