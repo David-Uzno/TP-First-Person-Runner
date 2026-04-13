@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "com.3dconnexion.3dxunity3d": "file:C:/Program Files/3Dconnexion/3DxWare/3DxUnity3D/src",
     "com.unity.ai.inference": "2.4.1",
     "com.unity.collab-proxy": "2.11.2",
     "com.unity.feature.development": "1.0.2",
