@@ -33,7 +33,7 @@ public class GameManager : MonoBehaviour
 			}
 		}
 
-        _record.gameObject.SetActive(true);
+        _record.SyncFromScore();
         Time.timeScale = 0f;
     }
 }

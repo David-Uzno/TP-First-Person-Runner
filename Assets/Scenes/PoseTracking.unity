@@ -315,7 +315,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1232564896
 RectTransform:
   m_ObjectHideFlags: 0
@@ -447,7 +447,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3336d63b40307dd43852abed9021f6f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Record
-  _playerPrefsKey: Record
   _score: {fileID: 2002836533}
   _recordText: {fileID: 1232564897}
 --- !u!1 &1810583024
