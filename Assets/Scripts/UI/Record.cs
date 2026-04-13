@@ -77,9 +77,27 @@ public class Record : MonoBehaviour
 
 	public void SyncFromScore()
 	{
-		if (!EnsureScoreAssigned()) return;
+		if (!EnsureScoreAssigned())
+			return;
 
-		_scoreValue = _score.Value;
+		int current = _score.Value;
+
+		int saved;
+		if (PlayerPrefs.HasKey(_playerPrefsKey))
+		{
+			saved = PlayerPrefs.GetInt(_playerPrefsKey);
+		}
+		else
+		{
+			saved = int.MinValue;
+		}
+
+		if (current <= saved)
+		{
+			return;
+		}
+
+		_scoreValue = current;
 		RefreshText();
 		SaveScore();
 	}
