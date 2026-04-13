@@ -91,6 +91,7 @@ public class ObjectPool : MonoBehaviour
             Destroy(instance);
             return;
         }
+        ResetInstanceState(instance);
         instance.SetActive(false);
         instance.transform.SetParent(transform);
         if (!_pools.TryGetValue(prefab, out Queue<GameObject> queue))
@@ -115,6 +116,48 @@ public class ObjectPool : MonoBehaviour
             _ownerPrefabs[prefabPool] = prefab;
             prefabPool.SetActive(false);
             queue.Enqueue(prefabPool);
+        }
+    }
+
+    public void ResetPool()
+    {
+        _pools.Clear();
+
+        foreach (KeyValuePair<GameObject, GameObject> pair in _ownerPrefabs)
+        {
+            GameObject instance = pair.Key;
+            GameObject prefab = pair.Value;
+            if (instance == null || prefab == null)
+            {
+                continue;
+            }
+
+            ResetInstanceState(instance);
+            instance.SetActive(false);
+            instance.transform.SetParent(transform, false);
+
+            if (!_pools.TryGetValue(prefab, out Queue<GameObject> queue))
+            {
+                queue = new Queue<GameObject>();
+                _pools[prefab] = queue;
+            }
+
+            queue.Enqueue(instance);
+        }
+    }
+
+    private static void ResetInstanceState(GameObject instance)
+    {
+        if (instance == null)
+        {
+            return;
+        }
+
+        if (instance.TryGetComponent(out Rigidbody rigidbody))
+        {
+            rigidbody.linearVelocity = Vector3.zero;
+            rigidbody.angularVelocity = Vector3.zero;
+            rigidbody.Sleep();
         }
     }
 }

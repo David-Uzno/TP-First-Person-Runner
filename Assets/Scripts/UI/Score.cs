@@ -71,4 +71,10 @@ public class Score : MonoBehaviour
 		int scoreValue = Mathf.FloorToInt(_elapsedTime);
 		_scoreText.text = scoreValue.ToString("D" + _digits);
 	}
+
+	public void ResetScore()
+	{
+		_elapsedTime = 0f;
+		RefreshText();
+	}
 }

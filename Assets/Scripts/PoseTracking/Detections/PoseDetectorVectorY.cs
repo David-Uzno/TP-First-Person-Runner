@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace TPRunner3D.PoseTracking
+namespace Runner3D.PoseTracking
 {
     [DisallowMultipleComponent]
     public sealed class PoseDetectorVectorY : MonoBehaviour
@@ -93,6 +93,11 @@ namespace TPRunner3D.PoseTracking
             _hasFilteredValue = false;
             _filteredY = 0f;
             _isInSpikeState = false;
+        }
+
+        public void ResetDetectionState()
+        {
+            ResetFilter();
         }
     }
 }

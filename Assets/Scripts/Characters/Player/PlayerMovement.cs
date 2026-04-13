@@ -1,5 +1,5 @@
 using UnityEngine;
-using TPRunner3D.PoseTracking;
+using Runner3D.PoseTracking;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -8,9 +8,17 @@ public class PlayerMovement : MonoBehaviour
     private bool _isJumping;
     private PoseDetectorVectorY _poseDetectorVectorY;
     [SerializeField] private AudioClip _audioClip;
+    private Vector3 _initialPosition;
+    private Quaternion _initialRotation;
 
     [Header("References")]
     [SerializeField] private Rigidbody _rigidbody;
+
+    private void Awake()
+    {
+        _initialPosition = transform.position;
+        _initialRotation = transform.rotation;
+    }
 
     private void OnEnable()
     {
@@ -64,5 +72,28 @@ public class PlayerMovement : MonoBehaviour
         {
             _poseDetectorVectorY = FindFirstObjectByType<PoseDetectorVectorY>();
         }
+    }
+
+    public void ResetMovementState()
+    {
+        if (_rigidbody == null)
+        {
+            _rigidbody = GetComponent<Rigidbody>();
+        }
+
+        if (_rigidbody != null)
+        {
+            _rigidbody.linearVelocity = Vector3.zero;
+            _rigidbody.angularVelocity = Vector3.zero;
+            _rigidbody.position = _initialPosition;
+            _rigidbody.rotation = _initialRotation;
+            _rigidbody.Sleep();
+        }
+        else
+        {
+            transform.SetPositionAndRotation(_initialPosition, _initialRotation);
+        }
+
+        _isJumping = false;
     }
 }

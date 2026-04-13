@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace TPRunner3D.PoseTracking
+namespace Runner3D.PoseTracking
 {
     [DisallowMultipleComponent]
     public sealed class PoseDetector : MonoBehaviour

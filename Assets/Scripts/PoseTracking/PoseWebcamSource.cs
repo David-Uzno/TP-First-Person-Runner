@@ -1,16 +1,26 @@
 using System.Collections;
 using UnityEngine;
 
-namespace TPRunner3D.PoseTracking
+#if UNITY_EDITOR
+using UnityEditor;
+using UnityEditor.Compilation;
+#endif
+
+namespace Runner3D.PoseTracking
 {
     [DisallowMultipleComponent]
     public sealed class PoseWebcamSource : MonoBehaviour
     {
+        private const int StartupAttempts = 4;
+        private const float StartupRetryDelaySeconds = 0.2f;
+        private const float StartupReadyTimeoutSeconds = 2f;
+
         [SerializeField] private int _requestedWidth = 1280;
         [SerializeField] private int _requestedHeight = 720;
         [SerializeField] private int _requestedFPS = 30;
 
         private WebCamTexture _texture;
+        private Coroutine _startCameraRoutine;
         private bool _isFrontFacing;
 
         public bool HasFreshFrame => IsReady && _texture.didUpdateThisFrame;
@@ -50,8 +60,26 @@ namespace TPRunner3D.PoseTracking
         }
         public Texture Texture => _texture;
 
-        private IEnumerator Start()
+        private void OnEnable()
         {
+            if (_startCameraRoutine != null)
+            {
+                return;
+            }
+
+            _startCameraRoutine = StartCoroutine(StartCameraRoutine());
+        }
+
+        private IEnumerator StartCameraRoutine()
+        {
+            yield return null;
+
+            if (!isActiveAndEnabled)
+            {
+                _startCameraRoutine = null;
+                yield break;
+            }
+
             if (!Application.HasUserAuthorization(UserAuthorization.WebCam))
             {
                 yield return Application.RequestUserAuthorization(UserAuthorization.WebCam);
@@ -60,24 +88,62 @@ namespace TPRunner3D.PoseTracking
             if (!Application.HasUserAuthorization(UserAuthorization.WebCam))
             {
                 Debug.LogError("Permiso de webcam denegado.");
+                _startCameraRoutine = null;
                 yield break;
             }
 
-            WebCamDevice[] devices = WebCamTexture.devices;
-            if (devices.Length == 0)
+            for (int attempt = 0; attempt < StartupAttempts; attempt++)
             {
-                Debug.LogError("No se encontró ninguna webcam.");
-                yield break;
+                StopCamera(immediate: false);
+
+                WebCamDevice[] devices = WebCamTexture.devices;
+                if (devices.Length == 0)
+                {
+                    yield return new WaitForSecondsRealtime(StartupRetryDelaySeconds);
+                    continue;
+                }
+
+                WebCamDevice selectedDevice = SelectDevice(devices);
+                _isFrontFacing = selectedDevice.isFrontFacing;
+                _texture = new WebCamTexture(selectedDevice.name, _requestedWidth, _requestedHeight, _requestedFPS);
+                _texture.Play();
+
+                float timeoutAt = Time.realtimeSinceStartup + StartupReadyTimeoutSeconds;
+                while (_texture != null && Time.realtimeSinceStartup < timeoutAt)
+                {
+                    if (IsReady)
+                    {
+                        _startCameraRoutine = null;
+                        yield break;
+                    }
+
+                    yield return null;
+                }
+
+                StopCamera(immediate: false);
+                yield return new WaitForSecondsRealtime(StartupRetryDelaySeconds);
             }
-            WebCamDevice selectedDevice = SelectDevice(devices);
-            _isFrontFacing = selectedDevice.isFrontFacing;
-            _texture = new WebCamTexture(selectedDevice.name, _requestedWidth, _requestedHeight, _requestedFPS);
-            _texture.Play();
+
+            Debug.LogError("PoseWebcamSource: No se pudo iniciar la webcam tras varios intentos.");
+            _startCameraRoutine = null;
         }
 
         private void OnDisable()
         {
-            StopCamera();
+            StopPendingStart();
+            StopCamera(immediate: !Application.isPlaying);
+        }
+
+        private void OnDestroy()
+        {
+            StopPendingStart();
+            StopCamera(immediate: !Application.isPlaying);
+        }
+
+        private void OnApplicationQuit()
+        {
+            StopPendingStart();
+            StopCamera(immediate: false);
         }
 
         private static WebCamDevice SelectDevice(WebCamDevice[] devices)
@@ -93,19 +159,106 @@ namespace TPRunner3D.PoseTracking
             return devices[0];
         }
 
-        private void StopCamera()
+        private void StopCamera(bool immediate)
         {
             if (_texture == null)
+            {
+                _isFrontFacing = false;
+                return;
+            }
+
+            WebCamTexture textureToRelease = _texture;
+            _texture = null;
+            _isFrontFacing = false;
+
+            if (textureToRelease.isPlaying)
+            {
+                textureToRelease.Stop();
+            }
+
+            if (immediate || !Application.isPlaying)
+            {
+                DestroyImmediate(textureToRelease);
+                return;
+            }
+
+            Destroy(textureToRelease);
+        }
+
+        private void StopPendingStart()
+        {
+            if (_startCameraRoutine == null)
             {
                 return;
             }
 
-            if (_texture.isPlaying)
-            {
-                _texture.Stop();
-            }
+            StopCoroutine(_startCameraRoutine);
+            _startCameraRoutine = null;
+        }
 
-            _texture = null;
+        internal static void ForceReleaseAllCameras(bool immediate)
+        {
+            WebCamTexture[] textures = Resources.FindObjectsOfTypeAll<WebCamTexture>();
+            for (int index = 0; index < textures.Length; index++)
+            {
+                WebCamTexture texture = textures[index];
+                if (texture == null)
+                {
+                    continue;
+                }
+
+                if (texture.isPlaying)
+                {
+                    texture.Stop();
+                }
+
+                if (immediate || !Application.isPlaying)
+                {
+                    DestroyImmediate(texture);
+                }
+                else
+                {
+                    Destroy(texture);
+                }
+            }
         }
     }
+
+#if UNITY_EDITOR
+    [InitializeOnLoad]
+    internal static class PoseWebcamSourceEditorLifecycle
+    {
+        static PoseWebcamSourceEditorLifecycle()
+        {
+            EditorApplication.playModeStateChanged -= HandlePlayModeStateChanged;
+            EditorApplication.playModeStateChanged += HandlePlayModeStateChanged;
+
+            AssemblyReloadEvents.beforeAssemblyReload -= HandleBeforeAssemblyReload;
+            AssemblyReloadEvents.beforeAssemblyReload += HandleBeforeAssemblyReload;
+
+            CompilationPipeline.compilationStarted -= HandleCompilationStarted;
+            CompilationPipeline.compilationStarted += HandleCompilationStarted;
+        }
+
+        private static void HandlePlayModeStateChanged(PlayModeStateChange state)
+        {
+            if (state != PlayModeStateChange.ExitingPlayMode && state != PlayModeStateChange.EnteredEditMode)
+            {
+                return;
+            }
+
+            PoseWebcamSource.ForceReleaseAllCameras(immediate: true);
+        }
+
+        private static void HandleBeforeAssemblyReload()
+        {
+            PoseWebcamSource.ForceReleaseAllCameras(immediate: true);
+        }
+
+        private static void HandleCompilationStarted(object context)
+        {
+            PoseWebcamSource.ForceReleaseAllCameras(immediate: true);
+        }
+    }
+#endif
 }

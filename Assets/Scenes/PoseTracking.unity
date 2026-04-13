@@ -129,6 +129,7 @@ GameObject:
   m_Component:
   - component: {fileID: 198947277}
   - component: {fileID: 198947278}
+  - component: {fileID: 198947279}
   m_Layer: 0
   m_Name: Game Over
   m_TagString: Untagged
@@ -251,6 +252,20 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &198947279
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 198947276}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3619312b90ca38146b3cec6abf6d3a2b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameOver
+  _gameManager: {fileID: 1148363354}
+  _poseDetectorVectorY: {fileID: 290216389}
 --- !u!1 &290216387
 GameObject:
   m_ObjectHideFlags: 0
@@ -765,6 +780,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   _record: {fileID: 1232564899}
   _gameOver: {fileID: 198947276}
+  _score: {fileID: 0}
+  _playerMovement: {fileID: 0}
+  _enemySpawner: {fileID: 0}
+  _objectPool: {fileID: 0}
+  _poseDetectorVectorY: {fileID: 0}
 --- !u!4 &1148363355
 Transform:
   m_ObjectHideFlags: 0
@@ -1927,8 +1947,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player
   _jumpForce: 15
-  _rigidbody: {fileID: 1340371715436068152}
   _audioClip: {fileID: 8300000, guid: b8289f40b223a6e42a9da11522b92190, type: 3}
+  _rigidbody: {fileID: 1340371715436068152}
 --- !u!108 &7880229237169107137
 Light:
   m_ObjectHideFlags: 0

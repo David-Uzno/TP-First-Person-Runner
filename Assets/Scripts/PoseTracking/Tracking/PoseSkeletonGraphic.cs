@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace TPRunner3D.PoseTracking
+namespace Runner3D.PoseTracking
 {
     [RequireComponent(typeof(RectTransform), typeof(CanvasRenderer))]
     public sealed class PoseSkeletonGraphic : MonoBehaviour

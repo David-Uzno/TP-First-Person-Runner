@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace TPRunner3D.PoseTracking
+namespace Runner3D.PoseTracking
 {
     [DisallowMultipleComponent]
     [RequireComponent(typeof(PoseWebcamSource))]
@@ -47,6 +47,19 @@ namespace TPRunner3D.PoseTracking
             }
         }
 
+        private void OnDisable()
+        {
+            _estimator?.Dispose();
+            _estimator = null;
+            _nextInferenceTime = 0f;
+
+            if (_cameraImage != null)
+            {
+                _cameraImage.texture = null;
+                _cameraImage.uvRect = new Rect(0f, 0f, 1f, 1f);
+            }
+        }
+
         private void Update()
         {
             UpdateView();
@@ -67,11 +80,6 @@ namespace TPRunner3D.PoseTracking
                 LastPoseUpdateTime = Time.unscaledTime;
                 _skeletonGraphic.Refresh();
             }
-        }
-
-        private void OnDestroy()
-        {
-            _estimator?.Dispose();
         }
 
         private void UpdateView()

@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace TPRunner3D.PoseTracking
+namespace Runner3D.PoseTracking
 {
     [DisallowMultipleComponent]
     [RequireComponent(typeof(RectTransform))]

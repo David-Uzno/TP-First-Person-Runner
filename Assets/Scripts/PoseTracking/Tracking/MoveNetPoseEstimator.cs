@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using Unity.InferenceEngine;
 
-namespace TPRunner3D.PoseTracking
+namespace Runner3D.PoseTracking
 {
     public sealed class MoveNetPoseEstimator : IDisposable
     {
