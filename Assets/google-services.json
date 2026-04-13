@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "131861861974",
+    "firebase_url": "https://tp-first-person-runner-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "tp-first-person-runner",
+    "storage_bucket": "tp-first-person-runner.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:131861861974:android:d7299f1228d49db9028df7",
+        "android_client_info": {
+          "package_name": "com.company.first.person.runner"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBOW2De7MfFtmu2KuHRtNpD8a0ICErSbTA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
