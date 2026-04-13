@@ -58,12 +58,4 @@ public class PlayerMovement : MonoBehaviour
             _poseDetectorVectorY = FindFirstObjectByType<PoseDetectorVectorY>();
         }
     }
-
-    /*private void OnTriggerEnter(Collider collider)
-    {
-        if (collider.CompareTag("Enemy"))
-        {
-            FindAnyObjectByType<GameManager>().LoseLife();
-        }
-    }*/
 }
