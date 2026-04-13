@@ -12,47 +12,16 @@ public class Score : MonoBehaviour
 	[SerializeField] private TMP_Text _scoreText;
 
 	private float _elapsedTime;
-	private bool _isRunning;
+	public int Value => Mathf.FloorToInt(_elapsedTime);
+	public int Digits => _digits;
 
 	private void Awake()
 	{
-		ResolveTextReference();
 		RefreshText();
-	}
-
-	private void OnEnable()
-	{
-		ResolveTextReference();
-		StartScore();
-	}
-
-	private void ResolveTextReference()
-	{
-		if (_scoreText != null)
-		{
-			return;
-		}
-
-		_scoreText = GetComponent<TMP_Text>();
-	}
-
-	public void StartScore()
-	{
-		_isRunning = true;
-	}
-
-	public void StopScore()
-	{
-		_isRunning = false;
 	}
 
 	private void Update()
 	{
-		if (_isRunning == false)
-		{
-			return;
-		}
-
 		_elapsedTime += Time.deltaTime * _speed;
 		RefreshText();
 	}
@@ -63,6 +32,10 @@ public class Score : MonoBehaviour
 		{
 			return;
 		}
+		else
+        {
+            _scoreText = GetComponent<TMP_Text>();
+        }
 
 		int scoreValue = Mathf.FloorToInt(_elapsedTime);
 		_scoreText.text = scoreValue.ToString("D" + _digits);

@@ -6,7 +6,7 @@ public class PlayerLife : MonoBehaviour
     {
         if (collider.CompareTag("Enemy"))
         {
-            FindAnyObjectByType<GameManager>().LoseLife();
+            FindAnyObjectByType<GameManager>().GameOver();
         }
     }
 }
