@@ -3570,7 +3570,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.85490197, g: 0.85490197, b: 0.85490197, a: 0}
+  m_BackGroundColor: {r: 0.85, g: 0.85, b: 0.85, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -3644,6 +3644,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4380885674440155737}
   - component: {fileID: 7880229237169107137}
+  - component: {fileID: 7880229237169107139}
+  - component: {fileID: 7880229237169107138}
   m_Layer: 0
   m_Name: Directional Light
   m_TagString: Untagged
@@ -3845,7 +3847,7 @@ Light:
   m_Enabled: 1
   serializedVersion: 12
   m_Type: 1
-  m_Color: {r: 1, g: 0.95686275, b: 0.8392157, a: 1}
+  m_Color: {r: 0.85800004, g: 0.8209883, b: 0.7200471, a: 1}
   m_Intensity: 1
   m_Range: 10
   m_SpotAngle: 30
@@ -3900,6 +3902,38 @@ Light:
   m_LightUnit: 1
   m_LuxAtDistance: 1
   m_EnableSpotReflector: 1
+--- !u!114 &7880229237169107138
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3379227079105930962}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a86e0ecbdc877c7449e44e2b69d9a110, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LoadLocalTime
+--- !u!114 &7880229237169107139
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3379227079105930962}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce19ffedc0909874bb180ff1195848e2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ChangeClimate
+  _timeUnit: 2
+  _loadLocalTime: {fileID: 7880229237169107138}
+  _minimumIntensity: 0
+  _maximumIntensity: 1
+  _backgroundVMin: 25
+  _backgroundVMax: 85
+  _camera: {fileID: 2223935078314142408}
+  _light: {fileID: 7880229237169107137}
 --- !u!23 &8216118649913049803
 MeshRenderer:
   m_ObjectHideFlags: 0
