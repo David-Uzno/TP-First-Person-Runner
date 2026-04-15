@@ -8,18 +8,10 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float _jumpForce = 4f;
     private bool _isJumping;
     private PoseDetectorVectorY _poseDetectorVectorY;
-    [SerializeField] private AudioClip _audioClip;
-    private Vector3 _initialPosition;
-    private Quaternion _initialRotation;
+    [SerializeField] private AudioSource _audioSource;
 
     [Header("References")]
     [SerializeField] private Rigidbody _rigidbody;
-
-    private void Awake()
-    {
-        _initialPosition = transform.position;
-        _initialRotation = transform.rotation;
-    }
 
     private void OnEnable()
     {
@@ -44,9 +36,9 @@ public class PlayerMovement : MonoBehaviour
         if (_isJumping == false)
         {
             _rigidbody.AddForce(_jumpForce * 10 * Vector3.up);
-            if (_audioClip != null)
+            if (_audioSource != null)
             {
-                AudioSource.PlayClipAtPoint(_audioClip, transform.position);
+                _audioSource.Play();
             }
 
             _isJumping = true;

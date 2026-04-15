@@ -10,7 +10,7 @@ public class Score : MonoBehaviour
 
 	[Header("Audio")]
 	[SerializeField, Min(1)] private int _pointsPerAudioClip = 100;
-	[SerializeField] private AudioClip _audioClip;
+	[SerializeField] private AudioSource _audioSource;
 
 	[Header("References")]
 	[SerializeField] private TMP_Text _scoreText;
@@ -41,7 +41,7 @@ public class Score : MonoBehaviour
 
 	private void TryPlayAudio(int previousScoreValue, int currentScoreValue)
 	{
-		if (_audioClip == null || _pointsPerAudioClip <= 0 || currentScoreValue <= previousScoreValue)
+		if (_audioSource == null || _pointsPerAudioClip <= 0 || currentScoreValue <= previousScoreValue)
 		{
 			return;
 		}
@@ -60,7 +60,10 @@ public class Score : MonoBehaviour
 			{
 				audioPosition = transform.position;
 			}
-			AudioSource.PlayClipAtPoint(_audioClip, audioPosition);
+			if (_audioSource.clip != null)
+			{
+				AudioSource.PlayClipAtPoint(_audioSource.clip, audioPosition);
+			}
 		}
 	}
 
