@@ -18,6 +18,75 @@ public static class RecordFirebaseSyncService
 
     private static Task EnsureInitializedAsync() => _initializationTask ??= InitializeAsync();
 
+    private static List<int> SortAndTrimRecords(IEnumerable<int> records)
+    {
+        List<int> sortedRecords = new(records);
+        sortedRecords.Sort((left, right) => right.CompareTo(left));
+
+        if (sortedRecords.Count > MaxRecordCount)
+        {
+            sortedRecords.RemoveRange(MaxRecordCount, sortedRecords.Count - MaxRecordCount);
+        }
+
+        return sortedRecords;
+    }
+
+    private static int CompareChildKeys(string leftKey, string rightKey)
+    {
+        bool leftIsNumber = int.TryParse(leftKey, out int leftIndex);
+        bool rightIsNumber = int.TryParse(rightKey, out int rightIndex);
+
+        if (leftIsNumber && rightIsNumber)
+        {
+            return leftIndex.CompareTo(rightIndex);
+        }
+
+        return string.Compare(leftKey, rightKey, StringComparison.Ordinal);
+    }
+
+    private static List<int> ReadRecordsFromSnapshot(DataSnapshot snapshot)
+    {
+        List<int> records = new();
+
+        if (snapshot == null)
+        {
+            return records;
+        }
+
+        if (!snapshot.HasChildren)
+        {
+            if (snapshot.Value != null && int.TryParse(snapshot.Value.ToString(), out int value))
+            {
+                records.Add(value);
+            }
+
+            return SortAndTrimRecords(records);
+        }
+
+        List<DataSnapshot> children = new();
+        foreach (DataSnapshot child in snapshot.Children)
+        {
+            children.Add(child);
+        }
+
+        children.Sort((left, right) => CompareChildKeys(left.Key, right.Key));
+
+        foreach (DataSnapshot child in children)
+        {
+            if (child.Value == null)
+            {
+                continue;
+            }
+
+            if (int.TryParse(child.Value.ToString(), out int value))
+            {
+                records.Add(value);
+            }
+        }
+
+        return SortAndTrimRecords(records);
+    }
+
     private static FirebaseApp GetOrCreateFirebaseApp()
     {
         string desktopConfigPath = Path.Combine(Application.streamingAssetsPath, DesktopConfigFileName);
@@ -65,6 +134,14 @@ public static class RecordFirebaseSyncService
         return payload;
     }
 
+    public static async Task<IReadOnlyList<int>> LoadRecordsAsync()
+    {
+        await EnsureInitializedAsync();
+
+        DataSnapshot snapshot = await _recordReference.GetValueAsync();
+        return ReadRecordsFromSnapshot(snapshot);
+    }
+
     private static async Task InitializeAsync()
     {
         DependencyStatus dependencyStatus = await FirebaseApp.CheckAndFixDependenciesAsync();
@@ -87,7 +164,7 @@ public static class RecordFirebaseSyncService
             return;
         }
 
-        await _recordReference.SetValueAsync(BuildRecordPayload(recordValues));
+        await _recordReference.SetValueAsync(BuildRecordPayload(SortAndTrimRecords(recordValues)));
     }
 
     public static Task SyncRecordAsync(int recordValue)

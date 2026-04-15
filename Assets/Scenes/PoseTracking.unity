@@ -413,14 +413,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9eb4c13ff4fe6a4d8ffc5223b412920, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LoadDataFirebase
-  _databasePath: records/runner-record
-  _listenToRealtimeUpdates: 1
+  _databasePath: records
   _textItems:
   - {fileID: 1663237573}
   - {fileID: 324209975}
   - {fileID: 2097964368}
-  _autoCollectTextItems: 1
-  _includeInactiveChildren: 1
 --- !u!1 &290216387
 GameObject:
   m_ObjectHideFlags: 0
@@ -583,7 +580,7 @@ RectTransform:
   m_GameObject: {fileID: 324209973}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2.4242427, y: 2.4242427, z: 2.4242427}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1761064366}
@@ -2384,7 +2381,7 @@ RectTransform:
   m_GameObject: {fileID: 1663237571}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2.4242427, y: 2.4242427, z: 2.4242427}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1761064366}
@@ -3377,7 +3374,7 @@ RectTransform:
   m_GameObject: {fileID: 2097964366}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2.4242427, y: 2.4242427, z: 2.4242427}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1761064366}

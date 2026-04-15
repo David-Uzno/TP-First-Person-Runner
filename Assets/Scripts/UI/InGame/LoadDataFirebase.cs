@@ -9,7 +9,7 @@ public class LoadDataFirebase : MonoBehaviour
 	private const string DesktopConfigFileName = "google-services-desktop.json";
 	private const string DesktopAppName = "RunnerDesktopApp";
 
-	[SerializeField] private string _databasePath = "records/runner-record";
+	[SerializeField] private string _databasePath = "records";
 	[SerializeField] private List<TMP_Text> _textItems = new();
 
 	private Firebase.Database.DatabaseReference _databaseReference;
