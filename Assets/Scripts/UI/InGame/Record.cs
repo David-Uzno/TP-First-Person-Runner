@@ -55,7 +55,7 @@ public class Record : MonoBehaviour
 
 		try
 		{
-			int? value = await RecordService.LoadRecordAsync();
+			int? value = await GameProgressSaver.LoadRecordAsync();
 
 			if (value.HasValue)
 			{
@@ -80,35 +80,49 @@ public class Record : MonoBehaviour
 		_recordText.gameObject.SetActive(false);
 	}
 
+	private async Task<bool> UpdateLocalRecordAsync(int currentValue)
+	{
+		int? localBest = await GameProgressSaver.LoadRecordAsync();
+
+		if (localBest.HasValue && currentValue <= localBest.Value)
+		{
+			return false;
+		}
+
+		_scoreValue = currentValue;
+		await GameProgressSaver.SaveRecordAsync(currentValue);
+
+		if (EnsureRecordTextAssigned())
+		{
+			_recordText.gameObject.SetActive(true);
+			RefreshText();
+		}
+
+		return true;
+	}
+
 	public async Task SyncFromScoreAsync()
 	{
 		if (!EnsureScoreAssigned()) return;
 
+		int current = _score.Value;
+
 		try
 		{
-			int current = _score.Value;
-			bool updated = await RecordService.TryUpdateRecordAsync(current);
-
-			if (!updated)
-			{
-				return;
-			}
-
-			_scoreValue = current;
-
-			if (!EnsureRecordTextAssigned())
-			{
-				Debug.LogWarning("Record: TMP_Text no asignado, no se puede mostrar el récord.");
-			}
-			else
-			{
-				_recordText.gameObject.SetActive(true);
-				RefreshText();
-			}
+			await UpdateLocalRecordAsync(current);
 		}
 		catch (Exception exception)
 		{
 			Debug.LogWarning($"Record: No se pudo guardar el récord local. {exception.Message}");
+		}
+
+		try
+		{
+			await RecordService.TryUpdateFirebaseRecordAsync(current);
+		}
+		catch (Exception exception)
+		{
+			Debug.LogWarning($"Record: No se pudo sincronizar el récord en Firebase. {exception.Message}");
 		}
 	}
 

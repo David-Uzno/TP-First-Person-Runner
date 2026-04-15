@@ -92,11 +92,15 @@ public static class GameProgressSaver
 
     public static async Task SaveRecordAsync(int value)
     {
-        List<int> records = new(await LoadRecordsAsync())
-        {
-            value
-        };
+        (ISavingSystem savingSystem, DataStore dataStore) = await GetRecordStoreAsync();
 
-        await SaveRecordsAsync(SortAndTrimRecords(records));
+        for (int index = 0; index < MaxRecordCount; index++)
+        {
+            dataStore.DeleteKey(GetRecordKey(index));
+        }
+
+        dataStore.SetInt(GetRecordKey(0), value);
+
+        await dataStore.Save(savingSystem, SaveName);
     }
 }
