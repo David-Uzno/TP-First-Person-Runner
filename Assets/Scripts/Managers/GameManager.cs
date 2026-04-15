@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class GameManager : MonoBehaviour
 {
@@ -9,10 +10,13 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Record _record;
 
     [Header("Panels")]
+    [SerializeField] private GameObject _pausePanel;
+    private bool _isPause;
     [SerializeField] private GameOver _gameOver;
-    [SerializeField] private GameObject _pause;
-
     private bool _isGameOver;
+
+    [Header("Inputs")]
+    [SerializeField] private PlayerInput _playerInput;
 
     private void Awake()
     {
@@ -23,8 +27,11 @@ public class GameManager : MonoBehaviour
         }
 
         Instance = this;
-        Time.timeScale = 1f;
+    }
 
+    private void Start()
+    {
+        Time.timeScale = 1f;
         ResolveReferences();
     }
 
@@ -33,6 +40,32 @@ public class GameManager : MonoBehaviour
         if (Instance == this)
         {
             Instance = null;
+        }
+    }
+
+    private void Update()
+    {
+        Pause();
+    }
+
+    private void Pause()
+    {
+        if (_isGameOver) return;
+
+        if (_playerInput.actions["Pause"].WasPressedThisFrame())
+        {
+            _isPause = !_isPause;
+
+            if (_isPause)
+            {
+                _pausePanel.gameObject.SetActive(true);
+                Time.timeScale = 0f;
+            }
+            else
+            {
+                _pausePanel.gameObject.SetActive(false);
+                Time.timeScale = 1f;
+            }
         }
     }
 
@@ -53,23 +86,38 @@ public class GameManager : MonoBehaviour
     public void RestartGame()
     {
         _score?.ResetScore();
-
+        _gameOver.gameObject.SetActive(false);
         _isGameOver = false;
         Time.timeScale = 1f;
     }
 
     private void ResolveReferences()
     {
-        _record = FindFirstObjectByType<Record>();
         if (_record == null)
-        {
-            Debug.LogWarning("GameManager: Componente de Record no encontrado en la escena.");
+        {        
+            _record = FindFirstObjectByType<Record>();
+            if (_record == null)
+            {
+                Debug.LogWarning("GameManager: Componente de Record no encontrado en la escena.");
+            }
         }
 
-        _gameOver = FindFirstObjectByType<GameOver>(FindObjectsInactive.Include);
         if (_gameOver == null)
         {
-            Debug.LogWarning("GameManager: Componente de GameOver no encontrado en la escena.");
+            _gameOver = FindFirstObjectByType<GameOver>(FindObjectsInactive.Include);
+            if (_gameOver == null)
+            {
+                Debug.LogWarning("GameManager: Componente de GameOver no encontrado en la escena.");
+            }
+        }
+
+        if (_playerInput == null)
+        {
+            _playerInput = FindFirstObjectByType<PlayerInput>();
+            if (_playerInput == null)
+            {
+                Debug.LogWarning("GameManager: Componente de PlayerInput no encontrado en la escena.");
+            }
         }
     }
 }
