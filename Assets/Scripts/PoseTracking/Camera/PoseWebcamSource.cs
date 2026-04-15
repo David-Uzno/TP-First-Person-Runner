@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 #if UNITY_EDITOR
@@ -14,6 +15,7 @@ namespace Runner3D.PoseTracking
         private const int StartupAttempts = 4;
         private const float StartupRetryDelaySeconds = 0.2f;
         private const float StartupReadyTimeoutSeconds = 2f;
+        private const int MaxDeviceCandidates = 5;
 
         [SerializeField] private int _requestedWidth = 1280;
         [SerializeField] private int _requestedHeight = 720;
@@ -97,31 +99,81 @@ namespace Runner3D.PoseTracking
                 StopCamera(immediate: false);
 
                 WebCamDevice[] devices = WebCamTexture.devices;
-                if (devices.Length == 0)
-                {
-                    yield return new WaitForSecondsRealtime(StartupRetryDelaySeconds);
-                    continue;
-                }
 
-                WebCamDevice selectedDevice = SelectDevice(devices);
-                _isFrontFacing = selectedDevice.isFrontFacing;
-                _texture = new WebCamTexture(selectedDevice.name, _requestedWidth, _requestedHeight, _requestedFPS);
-                _texture.Play();
+                List<string> candidateNames = new();
 
-                float timeoutAt = Time.realtimeSinceStartup + StartupReadyTimeoutSeconds;
-                while (_texture != null && Time.realtimeSinceStartup < timeoutAt)
+                if (devices.Length > 0)
                 {
-                    if (IsReady)
+                    int limit = Mathf.Min(devices.Length, MaxDeviceCandidates);
+                    int frontIndex = -1;
+                    for (int i = 0; i < limit; i++)
                     {
-                        _startCameraRoutine = null;
-                        yield break;
+                        if (devices[i].isFrontFacing)
+                        {
+                            frontIndex = i;
+                            break;
+                        }
                     }
 
-                    yield return null;
+                    if (frontIndex >= 0)
+                    {
+                        candidateNames.Add(devices[frontIndex].name);
+                    }
+
+                    for (int i = 0; i < limit; i++)
+                    {
+                        if (i == frontIndex) continue;
+                        candidateNames.Add(devices[i].name);
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < MaxDeviceCandidates; i++)
+                    {
+                        candidateNames.Add(null);
+                    }
                 }
 
-                StopCamera(immediate: false);
-                yield return new WaitForSecondsRealtime(StartupRetryDelaySeconds);
+                foreach (string candidate in candidateNames)
+                {
+                    if (candidate != null)
+                    {
+                        bool isFront = false;
+                        for (int j = 0; j < devices.Length; j++)
+                        {
+                            if (devices[j].name == candidate)
+                            {
+                                isFront = devices[j].isFrontFacing;
+                                break;
+                            }
+                        }
+
+                        _isFrontFacing = isFront;
+                        _texture = new WebCamTexture(candidate, _requestedWidth, _requestedHeight, _requestedFPS);
+                    }
+                    else
+                    {
+                        _isFrontFacing = false;
+                        _texture = new WebCamTexture(_requestedWidth, _requestedHeight, _requestedFPS);
+                    }
+
+                    _texture.Play();
+
+                    float timeoutAt = Time.realtimeSinceStartup + StartupReadyTimeoutSeconds;
+                    while (_texture != null && Time.realtimeSinceStartup < timeoutAt)
+                    {
+                        if (IsReady)
+                        {
+                            _startCameraRoutine = null;
+                            yield break;
+                        }
+
+                        yield return null;
+                    }
+
+                    StopCamera(immediate: false);
+                    yield return new WaitForSecondsRealtime(StartupRetryDelaySeconds);
+                }
             }
 
             Debug.LogError("PoseWebcamSource: No se pudo iniciar la webcam tras varios intentos.");
