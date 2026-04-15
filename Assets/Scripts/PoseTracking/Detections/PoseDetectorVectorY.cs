@@ -94,10 +94,5 @@ namespace Runner3D.PoseTracking
             _filteredY = 0f;
             _isInSpikeState = false;
         }
-
-        public void ResetDetectionState()
-        {
-            ResetFilter();
-        }
     }
 }

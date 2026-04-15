@@ -4,16 +4,13 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
 
-    [Header("UI")]
-    [SerializeField] private Record _record;
-    [SerializeField] private GameObject _gameOver;
-
-    [Header("Gameplay")]
+    [Header("Points")]
     [SerializeField] private Score _score;
-    [SerializeField] private PlayerMovement _playerMovement;
-    [SerializeField] private EnemySpawner _enemySpawner;
-    [SerializeField] private ObjectPool _objectPool;
-    [SerializeField] private Runner3D.PoseTracking.PoseDetectorVectorY _poseDetectorVectorY;
+    [SerializeField] private Record _record;
+
+    [Header("Panels")]
+    [SerializeField] private GameOver _gameOver;
+    [SerializeField] private GameObject _pause;
 
     private bool _isGameOver;
 
@@ -27,7 +24,8 @@ public class GameManager : MonoBehaviour
 
         Instance = this;
         Time.timeScale = 1f;
-        ResolveSceneReferences();
+
+        ResolveReferences();
     }
 
     private void OnDestroy()
@@ -48,61 +46,30 @@ public class GameManager : MonoBehaviour
         _isGameOver = true;
         Time.timeScale = 0f;
 
-        ResolveSceneReferences();
-        _enemySpawner?.StopSpawning();
-
-        if (_gameOver != null)
-        {
-            _gameOver.SetActive(true);
-        }
-        else
-		{
-            Debug.LogWarning("GameManager: Componente de GameOver no encontrado en la escena.");
-		}
-
-		if (_record == null)
-		{
-			_record = FindFirstObjectByType<Record>();
-			if (_record == null)
-			{
-				Debug.LogWarning("GameManager: Componente de Record no encontrado en la escena.");
-				return;
-			}
-		}
-
+        _gameOver.gameObject.SetActive(true);
         await _record.SyncFromScoreAsync();
     }
 
     public void RestartGame()
     {
-        ResolveSceneReferences();
-
-        _enemySpawner?.StopSpawning();
-        _objectPool?.ResetPool();
-        _playerMovement?.ResetMovementState();
         _score?.ResetScore();
-        _poseDetectorVectorY?.ResetDetectionState();
-
-        if (_gameOver != null)
-        {
-            _gameOver.SetActive(false);
-        }
 
         _isGameOver = false;
         Time.timeScale = 1f;
-        _enemySpawner?.StartSpawning();
     }
 
-    private void ResolveSceneReferences()
+    private void ResolveReferences()
     {
         _record = FindFirstObjectByType<Record>();
-        _score = FindFirstObjectByType<Score>();
-        _playerMovement = FindFirstObjectByType<PlayerMovement>();
-        _enemySpawner = FindFirstObjectByType<EnemySpawner>();
-        _objectPool = FindFirstObjectByType<ObjectPool>(FindObjectsInactive.Include);
-        _poseDetectorVectorY = FindFirstObjectByType<Runner3D.PoseTracking.PoseDetectorVectorY>(FindObjectsInactive.Include);
+        if (_record == null)
+        {
+            Debug.LogWarning("GameManager: Componente de Record no encontrado en la escena.");
+        }
 
-        global::GameOver gameOverComponent = FindFirstObjectByType<global::GameOver>(FindObjectsInactive.Include);
-        _gameOver = gameOverComponent != null ? gameOverComponent.gameObject : null;
+        _gameOver = FindFirstObjectByType<GameOver>(FindObjectsInactive.Include);
+        if (_gameOver == null)
+        {
+            Debug.LogWarning("GameManager: Componente de GameOver no encontrado en la escena.");
+        }
     }
 }

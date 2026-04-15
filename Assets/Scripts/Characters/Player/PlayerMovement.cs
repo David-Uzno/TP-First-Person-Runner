@@ -1,6 +1,7 @@
 using UnityEngine;
 using Runner3D.PoseTracking;
 
+[RequireComponent(typeof(Rigidbody))]
 public class PlayerMovement : MonoBehaviour
 {
     [Header ("Jump")]
@@ -72,28 +73,5 @@ public class PlayerMovement : MonoBehaviour
         {
             _poseDetectorVectorY = FindFirstObjectByType<PoseDetectorVectorY>();
         }
-    }
-
-    public void ResetMovementState()
-    {
-        if (_rigidbody == null)
-        {
-            _rigidbody = GetComponent<Rigidbody>();
-        }
-
-        if (_rigidbody != null)
-        {
-            _rigidbody.linearVelocity = Vector3.zero;
-            _rigidbody.angularVelocity = Vector3.zero;
-            _rigidbody.position = _initialPosition;
-            _rigidbody.rotation = _initialRotation;
-            _rigidbody.Sleep();
-        }
-        else
-        {
-            transform.SetPositionAndRotation(_initialPosition, _initialRotation);
-        }
-
-        _isJumping = false;
     }
 }

@@ -99,10 +99,45 @@ namespace Runner3D.PoseTracking
                 return;
             }
 
-            float width = _webcamSource.IsFrontFacing ? -1f : 1f;
-            float height = _webcamSource.IsVerticallyMirrored ? -1f : 1f;
-            float x = width < 0f ? 1f : 0f;
-            float y = height < 0f ? 1f : 0f;
+            float width;
+            if (_webcamSource.IsFrontFacing)
+            {
+                width = -1f;
+            }
+            else
+            {
+                width = 1f;
+            }
+
+            float height;
+            if (_webcamSource.IsVerticallyMirrored)
+            {
+                height = -1f;
+            }
+            else
+            {
+                height = 1f;
+            }
+
+            float x;
+            if (width < 0f)
+            {
+                x = 1f;
+            }
+            else
+            {
+                x = 0f;
+            }
+
+            float y;
+            if (height < 0f)
+            {
+                y = 1f;
+            }
+            else
+            {
+                y = 0f;
+            }
 
             Rect targetUv = new Rect(x, y, width, height);
             if (_cameraImage.uvRect != targetUv)

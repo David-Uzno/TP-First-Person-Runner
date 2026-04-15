@@ -51,7 +51,15 @@ public class Score : MonoBehaviour
 
 		for (int milestone = previousMilestone + 1; milestone <= currentMilestone; milestone++)
 		{
-			Vector3 audioPosition = Camera.main != null ? Camera.main.transform.position : transform.position;
+			Vector3 audioPosition;
+			if (Camera.main != null)
+			{
+				audioPosition = Camera.main.transform.position;
+			}
+			else
+			{
+				audioPosition = transform.position;
+			}
 			AudioSource.PlayClipAtPoint(_audioClip, audioPosition);
 		}
 	}
