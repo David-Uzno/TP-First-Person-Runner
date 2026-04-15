@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d4e6b7c9a8f4d129b3c5e7f1a2b3c4d, type: 3}
   m_Name: Cactus
   m_EditorClassIdentifier: 
-  _initialMoveSpeed: 5
+  _initialMoveSpeed: 7.5
   _speedIncrement: 0.5
-  _maxMoveSpeed: 10
+  _maxMoveSpeed: 40

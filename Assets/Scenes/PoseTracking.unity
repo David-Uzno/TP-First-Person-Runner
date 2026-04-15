@@ -3783,8 +3783,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemySpawner
   _enemyPrefab: {fileID: 8265609002487802450, guid: d2c0490285d9b994ba01740847ff9765, type: 3}
   _spawnTimeMin: 1
-  _spawnTimeMax: 3
-  _nextSpawnDelay: 0.5
+  _spawnTimeMax: 2.5
+  _nextSpawnDelay: 0.3
   _useSpeedProgression: 1
   _speedProgression: {fileID: 11400000, guid: 2f8f5f39b1c54b1caeaa4f7d46fe9e31, type: 2}
   _initialPoolSize: 5

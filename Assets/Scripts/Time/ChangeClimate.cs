@@ -67,7 +67,7 @@ public class ChangeClimate : MonoBehaviour
 		_lastUnitValue = currentUnitValue;
 
 		float normalizedTime = _loadLocalTime.GetNormalizedTime();
-		float clamped = Mathf.Clamp01(normalizedTime);
+		float clamped = 1f - Mathf.Clamp01(normalizedTime);
 
 		ApplyIntensity(clamped);
 		ApplyBackground(clamped);
