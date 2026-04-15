@@ -163,6 +163,6 @@ public class LoadDataFirebase : MonoBehaviour
 			return;
 		}
 
-		textItems[index].text = textValue;
+		textItems[index].text = $"{index + 1}: {textValue}";
 	}
 }
