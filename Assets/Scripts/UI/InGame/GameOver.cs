@@ -14,7 +14,7 @@ public class GameOver : MonoBehaviour
 	private void OnEnable()
 	{
 		_isRestarting = false;
-		_enabledTime = Time.time;
+		_enabledTime = Time.unscaledTime;
 		ResolvePoseDetector();
 
 		if (_poseDetectorVectorY != null)
@@ -41,12 +41,17 @@ public class GameOver : MonoBehaviour
 			return;
 		}
 
-		if (Time.time - _enabledTime < _activationDelayRestart)
+		if (Time.unscaledTime - _enabledTime < _activationDelayRestart)
 		{
 			return;
 		}
 
         ResolveGameManager();
+
+		if (_gameManager == null)
+		{
+			return;
+		}
 
 		_isRestarting = true;
 		_gameManager.RestartGame();
