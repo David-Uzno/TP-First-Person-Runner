@@ -360,7 +360,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3619312b90ca38146b3cec6abf6d3a2b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameOver
-  _activationDelayRestart: 0.5
+  _activationDelayRestart: 0.2
   _gameManager: {fileID: 1148363354}
   _poseDetectorVectorY: {fileID: 290216389}
 --- !u!222 &198947280

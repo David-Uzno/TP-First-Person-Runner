@@ -87,11 +87,7 @@ public class GameManager : MonoBehaviour
 
     public void RestartGame()
     {   
-        if (_objectPool != null)
-        {
-            return;
-        }
-        else
+        if (_objectPool == null)
         {
             _objectPool = FindFirstObjectByType<ObjectPool>();
         }
