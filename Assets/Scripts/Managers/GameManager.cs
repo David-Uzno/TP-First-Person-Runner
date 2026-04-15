@@ -25,6 +25,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private PlayerInput _playerInput;
 
     private ObjectPool _objectPool;
+    private EnemySpawner _enemySpawner;
 
     private void Awake()
     {
@@ -98,7 +99,13 @@ public class GameManager : MonoBehaviour
             _objectPool = FindFirstObjectByType<ObjectPool>();
         }
 
+        if (_enemySpawner == null)
+        {
+            _enemySpawner = FindFirstObjectByType<EnemySpawner>();
+        }
+
         _objectPool?.ResetForRestart();
+        _enemySpawner?.ResetForRestart();
 
         _score?.ResetScore();
         _gameOver.gameObject.SetActive(false);
@@ -132,6 +139,15 @@ public class GameManager : MonoBehaviour
             if (_playerInput == null)
             {
                 Debug.LogWarning("GameManager: Componente de PlayerInput no encontrado en la escena.");
+            }
+        }
+
+        if (_enemySpawner == null)
+        {
+            _enemySpawner = FindFirstObjectByType<EnemySpawner>();
+            if (_enemySpawner == null)
+            {
+                Debug.LogWarning("GameManager: Componente de EnemySpawner no encontrado en la escena.");
             }
         }
     }

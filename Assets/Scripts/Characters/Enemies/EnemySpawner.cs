@@ -31,10 +31,7 @@ public class EnemySpawner : MonoBehaviour
             return;
         }
 
-        if (_useSpeedProgression && _speedProgression != null)
-        {
-            _speedProgression.ResetProgression();
-        }
+        ResetForRestart();
 
         _objectPool = ObjectPool.GetOrCreateInstance(gameObject);
         _objectPool.Preload(_enemyPrefab, _initialPoolSize);
@@ -94,6 +91,14 @@ public class EnemySpawner : MonoBehaviour
         if (_spawnRoutine == null)
         {
             _spawnRoutine = StartCoroutine(SpawnLoop());
+        }
+    }
+
+    public void ResetForRestart()
+    {
+        if (_useSpeedProgression && _speedProgression != null)
+        {
+            _speedProgression.ResetProgression();
         }
     }
 }
