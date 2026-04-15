@@ -18,6 +18,8 @@ public class GameManager : MonoBehaviour
     [Header("Inputs")]
     [SerializeField] private PlayerInput _playerInput;
 
+    private ObjectPool _objectPool;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -84,7 +86,18 @@ public class GameManager : MonoBehaviour
     }
 
     public void RestartGame()
-    {
+    {   
+        if (_objectPool != null)
+        {
+            return;
+        }
+        else
+        {
+            _objectPool = FindFirstObjectByType<ObjectPool>();
+        }
+
+        _objectPool?.ResetForRestart();
+
         _score?.ResetScore();
         _gameOver.gameObject.SetActive(false);
         _isGameOver = false;

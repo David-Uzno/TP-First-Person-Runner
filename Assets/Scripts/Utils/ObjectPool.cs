@@ -119,6 +119,40 @@ public class ObjectPool : MonoBehaviour
         }
     }
 
+    public void ResetForRestart()
+    {
+        foreach (Queue<GameObject> queue in _pools.Values)
+        {
+            queue.Clear();
+        }
+
+        List<GameObject> trackedInstances = new(_ownerPrefabs.Keys);
+        foreach (GameObject instance in trackedInstances)
+        {
+            if (instance == null)
+            {
+                continue;
+            }
+
+            if (!_ownerPrefabs.TryGetValue(instance, out GameObject prefab) || prefab == null)
+            {
+                continue;
+            }
+
+            ResetInstanceState(instance);
+            instance.transform.SetParent(transform);
+            instance.SetActive(false);
+
+            if (!_pools.TryGetValue(prefab, out Queue<GameObject> queue))
+            {
+                queue = new Queue<GameObject>();
+                _pools[prefab] = queue;
+            }
+
+            queue.Enqueue(instance);
+        }
+    }
+
     private static void ResetInstanceState(GameObject instance)
     {
         if (instance == null)
