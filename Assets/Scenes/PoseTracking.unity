@@ -3834,7 +3834,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa19995c078e0de4882020a3cb947520, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player
-  _jumpForce: 25
+  _jumpForce: 40
   _audioSource: {fileID: 9117384333558304760}
   _rigidbody: {fileID: 1340371715436068152}
 --- !u!108 &7880229237169107137
