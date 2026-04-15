@@ -9,7 +9,7 @@ public static class RecordFirebaseSyncService
 {
     private const string DesktopConfigFileName = "google-services-desktop.json";
     private const string DesktopAppName = "RunnerDesktopApp";
-    private const string RecordPath = "records/runner-record";
+    private const string RecordPath = "records";
 
     private static Task _initializationTask;
     private static DatabaseReference _recordReference;
