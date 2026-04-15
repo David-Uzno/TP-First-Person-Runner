@@ -3,14 +3,18 @@ using Runner3D.PoseTracking;
 
 public class GameOver : MonoBehaviour
 {
+	[SerializeField] private float _activationDelayRestart = 0.5f;
+
     [Header("References")]
     [SerializeField] private GameManager _gameManager;
 	[SerializeField] private PoseDetectorVectorY _poseDetectorVectorY;
+	private float _enabledTime;
 	private bool _isRestarting;
 
 	private void OnEnable()
 	{
 		_isRestarting = false;
+		_enabledTime = Time.time;
 		ResolvePoseDetector();
 
 		if (_poseDetectorVectorY != null)
@@ -22,6 +26,7 @@ public class GameOver : MonoBehaviour
 	private void OnDisable()
 	{
 		_isRestarting = false;
+		_enabledTime = 0f;
 
 		if (_poseDetectorVectorY != null)
 		{
@@ -32,6 +37,11 @@ public class GameOver : MonoBehaviour
 	private void RestartGame()
 	{
 		if (_isRestarting)
+		{
+			return;
+		}
+
+		if (Time.time - _enabledTime < _activationDelayRestart)
 		{
 			return;
 		}
