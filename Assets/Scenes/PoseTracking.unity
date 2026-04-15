@@ -1828,8 +1828,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: c79c3c4fdb3c4444e9741e7c1ac23ebc, type: 2}
-  m_sharedMaterial: {fileID: 8628611553579947287, guid: c79c3c4fdb3c4444e9741e7c1ac23ebc, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 120fef9402990c64397985dce8557fb1, type: 2}
+  m_sharedMaterial: {fileID: 8035641592669832968, guid: 120fef9402990c64397985dce8557fb1, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -3141,8 +3141,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 00000
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: c79c3c4fdb3c4444e9741e7c1ac23ebc, type: 2}
-  m_sharedMaterial: {fileID: 8628611553579947287, guid: c79c3c4fdb3c4444e9741e7c1ac23ebc, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 120fef9402990c64397985dce8557fb1, type: 2}
+  m_sharedMaterial: {fileID: 8035641592669832968, guid: 120fef9402990c64397985dce8557fb1, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -3930,7 +3930,7 @@ MonoBehaviour:
   _loadLocalTime: {fileID: 7880229237169107138}
   _minimumIntensity: 0
   _maximumIntensity: 1
-  _backgroundVMin: 25
+  _backgroundVMin: 35
   _backgroundVMax: 85
   _camera: {fileID: 2223935078314142408}
   _light: {fileID: 7880229237169107137}

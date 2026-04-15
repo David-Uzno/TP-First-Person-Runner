@@ -5,6 +5,12 @@ public class ObjectPool : MonoBehaviour
 {
     private static ObjectPool _instance;
 
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    private static void ResetStatics()
+    {
+        _instance = null;
+    }
+
     public static bool TryGetInstance(out ObjectPool instance)
     {
         instance = _instance;
