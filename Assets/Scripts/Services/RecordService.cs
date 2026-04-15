@@ -10,6 +10,33 @@ public static class RecordService
         return GameProgressSaver.LoadRecordAsync();
     }
 
+    private static bool ShouldInsertRecord(IReadOnlyList<int> records, int currentValue)
+    {
+        return records.Count == 0 || currentValue > records[records.Count - 1];
+    }
+
+    private static List<int> BuildUpdatedRecords(IReadOnlyList<int> baseRecords, int currentValue)
+    {
+        List<int> updatedRecords = new(baseRecords);
+
+        if (updatedRecords.Count == 0)
+        {
+            updatedRecords.Add(currentValue);
+            return updatedRecords;
+        }
+
+        if (updatedRecords.Count < RecordFirebaseSyncService.MaxRecordCount)
+        {
+            updatedRecords.Add(currentValue);
+            updatedRecords.Sort((left, right) => right.CompareTo(left));
+            return updatedRecords;
+        }
+
+        updatedRecords[RecordFirebaseSyncService.MaxRecordCount - 1] = currentValue;
+        updatedRecords.Sort((left, right) => right.CompareTo(left));
+        return updatedRecords;
+    }
+
     public static async Task<bool> TryUpdateRecordAsync(int currentValue)
     {
         IReadOnlyList<int> localRecords = await GameProgressSaver.LoadRecordsAsync();
@@ -31,17 +58,9 @@ public static class RecordService
 
         int? previousBest = baseRecords.Count > 0 ? baseRecords[0] : null;
 
-        List<int> updatedRecords = new(baseRecords)
-        {
-            currentValue
-        };
-
-        updatedRecords.Sort((left, right) => right.CompareTo(left));
-
-        if (updatedRecords.Count > 3)
-        {
-            updatedRecords.RemoveRange(3, updatedRecords.Count - 3);
-        }
+        List<int> updatedRecords = ShouldInsertRecord(baseRecords, currentValue)
+            ? BuildUpdatedRecords(baseRecords, currentValue)
+            : new List<int>(baseRecords);
 
         bool recordsChanged = localRecords.Count != updatedRecords.Count;
 
