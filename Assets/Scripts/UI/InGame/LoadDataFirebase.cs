@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using TMPro;
 using UnityEngine;
@@ -17,18 +16,18 @@ public class LoadDataFirebase : MonoBehaviour
 
 	private async void Start()
 	{
-		if (_textItems == null || _textItems.Count == 0)
-		{
-			_textItems = new List<TMP_Text>(GetComponentsInChildren<TMP_Text>(true));
-		}
-
-		if (_textItems.Count == 0)
-		{
-			return;
-		}
-
 		try
 		{
+			if (_textItems == null || _textItems.Count == 0)
+			{
+				_textItems = new List<TMP_Text>(GetComponentsInChildren<TMP_Text>(true));
+			}
+
+			if (_textItems.Count == 0)
+			{
+				return;
+			}
+
 			Firebase.DependencyStatus dependencyStatus = await Firebase.FirebaseApp.CheckAndFixDependenciesAsync();
 
 			if (dependencyStatus != Firebase.DependencyStatus.Available)
@@ -36,7 +35,7 @@ public class LoadDataFirebase : MonoBehaviour
 				return;
 			}
 
-			_databaseReference = Firebase.Database.FirebaseDatabase.GetInstance(GetOrCreateFirebaseApp()).GetReference(_databasePath);
+			_databaseReference = CreateDatabaseReference();
 			_databaseReference.ValueChanged += OnValueChanged;
 
 			ApplySnapshot(await _databaseReference.GetValueAsync());
@@ -55,6 +54,13 @@ public class LoadDataFirebase : MonoBehaviour
 		}
 
 		_databaseReference.ValueChanged -= OnValueChanged;
+	}
+
+	private Firebase.Database.DatabaseReference CreateDatabaseReference()
+	{
+		Firebase.FirebaseApp app = GetOrCreateFirebaseApp();
+		Firebase.Database.FirebaseDatabase database = Firebase.Database.FirebaseDatabase.GetInstance(app);
+		return database.GetReference(_databasePath);
 	}
 
 	private static Firebase.FirebaseApp GetOrCreateFirebaseApp()
@@ -87,12 +93,10 @@ public class LoadDataFirebase : MonoBehaviour
 
 	private void OnValueChanged(object sender, Firebase.Database.ValueChangedEventArgs args)
 	{
-		if (args.DatabaseError != null)
+		if (args.DatabaseError == null)
 		{
-			return;
+			ApplySnapshot(args.Snapshot);
 		}
-
-		ApplySnapshot(args.Snapshot);
 	}
 
 	private void ApplySnapshot(Firebase.Database.DataSnapshot snapshot)
@@ -102,56 +106,63 @@ public class LoadDataFirebase : MonoBehaviour
 			return;
 		}
 
+		for (int index = 0; index < _textItems.Count; index++)
+		{
+			if (_textItems[index] != null)
+			{
+				_textItems[index].text = string.Empty;
+			}
+		}
+
 		if (!snapshot.HasChildren)
 		{
-			string rootText = Convert.ToString(snapshot.Value, CultureInfo.InvariantCulture);
-			if (!string.IsNullOrWhiteSpace(rootText) && _textItems.Count > 0)
-			{
-				_textItems[0].text = rootText;
-			}
+			SetTextIfNotEmpty(_textItems, 0, snapshot.Value);
 
 			return;
 		}
 
-		List<Firebase.Database.DataSnapshot> children = new();
+		List<Firebase.Database.DataSnapshot> children = new List<Firebase.Database.DataSnapshot>();
 		foreach (Firebase.Database.DataSnapshot child in snapshot.Children)
 		{
 			children.Add(child);
 		}
 
-		if (children.Count > 1)
-		{
-			bool canSort = true;
-			foreach (Firebase.Database.DataSnapshot child in children)
-			{
-				if (!int.TryParse(child.Key, NumberStyles.Integer, CultureInfo.InvariantCulture, out _))
-				{
-					canSort = false;
-					break;
-				}
-			}
+		children.Sort(CompareChildKeys);
 
-			if (canSort)
-			{
-				children.Sort((left, right) => int.Parse(left.Key, NumberStyles.Integer, CultureInfo.InvariantCulture).CompareTo(int.Parse(right.Key, NumberStyles.Integer, CultureInfo.InvariantCulture)));
-			}
+		int itemCount = Mathf.Min(_textItems.Count, children.Count);
+		for (int index = 0; index < itemCount; index++)
+		{
+			SetTextIfNotEmpty(_textItems, index, children[index].Value);
+		}
+	}
+
+	private static int CompareChildKeys(Firebase.Database.DataSnapshot left, Firebase.Database.DataSnapshot right)
+	{
+		int leftKey;
+		int rightKey;
+
+		if (int.TryParse(left.Key, out leftKey) && int.TryParse(right.Key, out rightKey))
+		{
+			return leftKey.CompareTo(rightKey);
 		}
 
-		int index = 0;
-		foreach (Firebase.Database.DataSnapshot child in children)
+		return string.Compare(left.Key, right.Key, StringComparison.Ordinal);
+	}
+
+	private static void SetTextIfNotEmpty(List<TMP_Text> textItems, int index, object value)
+	{
+		if (textItems == null || index < 0 || index >= textItems.Count || value == null)
 		{
-			if (index >= _textItems.Count)
-			{
-				break;
-			}
-
-			string textValue = Convert.ToString(child.Value, CultureInfo.InvariantCulture);
-			if (!string.IsNullOrWhiteSpace(textValue))
-			{
-				_textItems[index].text = textValue;
-			}
-
-			index++;
+			return;
 		}
+
+		string textValue = value.ToString();
+
+		if (string.IsNullOrWhiteSpace(textValue))
+		{
+			return;
+		}
+
+		textItems[index].text = textValue;
 	}
 }

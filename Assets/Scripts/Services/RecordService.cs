@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -11,34 +12,60 @@ public static class RecordService
 
     public static async Task<bool> TryUpdateRecordAsync(int currentValue)
     {
-        int? previousValue = await GameProgressSaver.LoadRecordAsync();
+        IReadOnlyList<int> previousRecords = await GameProgressSaver.LoadRecordsAsync();
+        int? previousBest = previousRecords.Count > 0 ? previousRecords[0] : null;
 
-        if (previousValue.HasValue && currentValue <= previousValue.Value)
+        List<int> updatedRecords = new(previousRecords)
         {
+            currentValue
+        };
+
+        updatedRecords.Sort((left, right) => right.CompareTo(left));
+
+        if (updatedRecords.Count > 3)
+        {
+            updatedRecords.RemoveRange(3, updatedRecords.Count - 3);
+        }
+
+        bool recordsChanged = previousRecords.Count != updatedRecords.Count;
+
+        if (!recordsChanged)
+        {
+            for (int index = 0; index < previousRecords.Count; index++)
+            {
+                if (previousRecords[index] != updatedRecords[index])
+                {
+                    recordsChanged = true;
+                    break;
+                }
+            }
+        }
+
+        if (recordsChanged)
+        {
+            await GameProgressSaver.SaveRecordsAsync(updatedRecords);
+
             try
             {
-                await RecordFirebaseSyncService.SyncRecordAsync(previousValue.Value);
+                await RecordFirebaseSyncService.SyncRecordsAsync(updatedRecords);
             }
             catch (Exception exception)
             {
                 Debug.LogWarning($"RecordService: No se pudo sincronizar el récord con Firebase. {exception}");
             }
-
-            return false;
         }
-
-        await GameProgressSaver.SaveRecordAsync(currentValue);
-
-        try
+        else if (previousRecords.Count > 0)
         {
-            await RecordFirebaseSyncService.SyncRecordAsync(currentValue);
+            try
+            {
+                await RecordFirebaseSyncService.SyncRecordsAsync(previousRecords);
+            }
+            catch (Exception exception)
+            {
+                Debug.LogWarning($"RecordService: No se pudo sincronizar el récord con Firebase. {exception}");
+            }
         }
-        catch (Exception exception)
-        {
 
-            Debug.LogWarning($"RecordService: No se pudo sincronizar el récord con Firebase. {exception}");
-        }
-
-        return true;
+        return !previousBest.HasValue || currentValue > previousBest.Value;
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Firebase;
@@ -10,6 +11,7 @@ public static class RecordFirebaseSyncService
     private const string DesktopConfigFileName = "google-services-desktop.json";
     private const string DesktopAppName = "RunnerDesktopApp";
     private const string RecordPath = "records";
+    private const int MaxRecordCount = 3;
 
     private static Task _initializationTask;
     private static DatabaseReference _recordReference;
@@ -50,6 +52,19 @@ public static class RecordFirebaseSyncService
         return database.GetReference(RecordPath);
     }
 
+    private static Dictionary<string, object> BuildRecordPayload(IReadOnlyList<int> recordValues)
+    {
+        Dictionary<string, object> payload = new();
+        int recordCount = recordValues == null ? 0 : Math.Min(recordValues.Count, MaxRecordCount);
+
+        for (int index = 0; index < recordCount; index++)
+        {
+            payload[index.ToString()] = recordValues[index];
+        }
+
+        return payload;
+    }
+
     private static async Task InitializeAsync()
     {
         DependencyStatus dependencyStatus = await FirebaseApp.CheckAndFixDependenciesAsync();
@@ -63,10 +78,20 @@ public static class RecordFirebaseSyncService
         _recordReference = CreateRecordReference(app);
     }
 
-    public static async Task SyncRecordAsync(int recordValue)
+    public static async Task SyncRecordsAsync(IReadOnlyList<int> recordValues)
     {
         await EnsureInitializedAsync();
 
-        await _recordReference.SetValueAsync(recordValue);
+        if (recordValues == null || recordValues.Count == 0)
+        {
+            return;
+        }
+
+        await _recordReference.SetValueAsync(BuildRecordPayload(recordValues));
+    }
+
+    public static Task SyncRecordAsync(int recordValue)
+    {
+        return SyncRecordsAsync(new[] { recordValue });
     }
 }
