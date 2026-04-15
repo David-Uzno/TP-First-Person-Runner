@@ -1034,8 +1034,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   _score: {fileID: 2002836533}
   _record: {fileID: 1232564899}
-  _gameOver: {fileID: 198947279}
   _pausePanel: {fileID: 955326686}
+  _gameOver: {fileID: 198947279}
   _playerInput: {fileID: 1148363356}
 --- !u!4 &1148363355
 Transform:
@@ -2144,28 +2144,6 @@ Transform:
   - {fileID: 6574914561232568878}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!64 &1722136648704364403
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7057690231599448944}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!20 &2223935078314142408
 Camera:
   m_ObjectHideFlags: 0
@@ -2234,7 +2212,7 @@ GameObject:
   - component: {fileID: 7655520892808134017}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2370,7 +2348,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
+  m_Size: {x: 1, y: 1, z: 0.2}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &6054821600503074856
 MonoBehaviour:
@@ -2398,7 +2376,7 @@ Transform:
   m_GameObject: {fileID: 1026659668645041485}
   serializedVersion: 2
   m_LocalRotation: {x: 0.050157167, y: -0, z: -0, w: 0.9987413}
-  m_LocalPosition: {x: 0, y: 1.51, z: 0}
+  m_LocalPosition: {x: 0, y: 0.75, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2415,7 +2393,7 @@ GameObject:
   - component: {fileID: 1190214944145593743}
   - component: {fileID: 5736791873477375960}
   - component: {fileID: 8216118649913049803}
-  - component: {fileID: 1722136648704364403}
+  - component: {fileID: 8216118649913049804}
   m_Layer: 0
   m_Name: Plane
   m_TagString: Plataform
@@ -2435,7 +2413,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa19995c078e0de4882020a3cb947520, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player
-  _jumpForce: 15
+  _jumpForce: 25
   _audioClip: {fileID: 8300000, guid: b8289f40b223a6e42a9da11522b92190, type: 3}
   _rigidbody: {fileID: 1340371715436068152}
 --- !u!108 &7880229237169107137
@@ -2552,6 +2530,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &8216118649913049804
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7057690231599448944}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 10, y: 2.220446e-16, z: 10}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &8910211548442385903
 GameObject:
   m_ObjectHideFlags: 0
@@ -2562,6 +2561,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3900486931139897031}
   - component: {fileID: 6054821600503074856}
+  - component: {fileID: 8910211548442385904}
   m_Layer: 0
   m_Name: CactusSpawner
   m_TagString: Untagged
@@ -2569,6 +2569,21 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &8910211548442385904
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8910211548442385903}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d4e6b7c9a8f4d129b3c5e7f1a2b3c4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemySpeedProgression
+  _initialMoveSpeed: 5
+  _speedIncrement: 0.5
+  _maxMoveSpeed: 25
 --- !u!33 &9117384333558304758
 MeshFilter:
   m_ObjectHideFlags: 0

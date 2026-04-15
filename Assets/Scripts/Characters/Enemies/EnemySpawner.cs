@@ -1,3 +1,4 @@
+using NaughtyAttributes;
 using System.Collections;
 using UnityEngine;
 
@@ -10,6 +11,11 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] private float _spawnTimeMin = 1f;
     [SerializeField] private float _spawnTimeMax = 3f;
     [SerializeField] private float _nextSpawnDelay = 0.5f;
+
+    [Header("Difficult")]
+    [SerializeField] private bool _useSpeedProgression = true;
+    [ShowIf(nameof(_useSpeedProgression)), AllowNesting]
+    [SerializeField] private EnemySpeedProgression _speedProgression;
 
     [Header("Object Pool")]
     [SerializeField] private int _initialPoolSize = 5;
@@ -24,6 +30,12 @@ public class EnemySpawner : MonoBehaviour
             Debug.LogWarning("EnemySpawner: no se ha asignado enemyPrefab.", this);
             return;
         }
+
+        if (_useSpeedProgression && _speedProgression != null)
+        {
+            _speedProgression.ResetProgression();
+        }
+
         _objectPool = ObjectPool.GetOrCreateInstance(gameObject);
         _objectPool.Preload(_enemyPrefab, _initialPoolSize);
         _spawnRoutine = StartCoroutine(SpawnLoop());
@@ -35,15 +47,36 @@ public class EnemySpawner : MonoBehaviour
         {
             float spawnTime = Random.Range(_spawnTimeMin, _spawnTimeMax);
             yield return new WaitForSeconds(spawnTime);
-            if (_objectPool != null)
+
+            SpawnEnemy();
+
+            yield return new WaitForSeconds(_nextSpawnDelay);
+        }
+    }
+
+    private void SpawnEnemy()
+    {
+        GameObject enemyInstance;
+
+        if (_objectPool != null)
+        {
+            enemyInstance = _objectPool.Get(_enemyPrefab, transform.position, transform.rotation);
+        }
+        else
+        {
+            enemyInstance = Instantiate(_enemyPrefab, transform.position, transform.rotation);
+        }
+
+        if (enemyInstance != null && enemyInstance.TryGetComponent(out Enemy enemy))
+        {
+            if (_useSpeedProgression && _speedProgression != null)
             {
-                _objectPool.Get(_enemyPrefab, transform.position, transform.rotation);
+                enemy.SetMoveSpeed(_speedProgression.GetNextMoveSpeed());
             }
             else
             {
-                Instantiate(_enemyPrefab, transform.position, transform.rotation);
+                enemy.ResetMoveSpeed();
             }
-            yield return new WaitForSeconds(_nextSpawnDelay);
         }
     }
 

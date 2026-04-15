@@ -11,15 +11,27 @@ public class Enemy : MonoBehaviour
     [SerializeField] private Rigidbody _rigidbody;
 
     private ObjectPool _objectPool;
+    private float _defaultMoveSpeed;
 
     private void Awake()
     {
         _rigidbody = GetComponent<Rigidbody>();
+        _defaultMoveSpeed = _moveSpeed;
     }
 
     private void Start()
     {
         ObjectPool.TryGetInstance(out _objectPool);
+    }
+
+    public void SetMoveSpeed(float moveSpeed)
+    {
+        _moveSpeed = moveSpeed;
+    }
+
+    public void ResetMoveSpeed()
+    {
+        _moveSpeed = _defaultMoveSpeed;
     }
 
     private void FixedUpdate()
