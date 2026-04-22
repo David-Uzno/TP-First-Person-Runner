@@ -3527,7 +3527,7 @@ Rigidbody:
   serializedVersion: 5
   m_Mass: 1
   m_LinearDamping: 0
-  m_AngularDamping: 0.05
+  m_AngularDamping: 0
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
@@ -3624,6 +3624,7 @@ GameObject:
   - component: {fileID: 3779229588642925670}
   - component: {fileID: 5757345953566027673}
   - component: {fileID: 1340371715436068152}
+  - component: {fileID: 9117384333558304761}
   - component: {fileID: 9117384333558304759}
   - component: {fileID: 7655520892808134017}
   - component: {fileID: 9117384333558304760}
@@ -3783,8 +3784,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemySpawner
   _enemyPrefab: {fileID: 8265609002487802450, guid: d2c0490285d9b994ba01740847ff9765, type: 3}
   _spawnTimeMin: 1
-  _spawnTimeMax: 2.5
-  _nextSpawnDelay: 0.3
+  _spawnTimeMax: 3
+  _nextSpawnDelay: 0.5
   _useSpeedProgression: 1
   _speedProgression: {fileID: 11400000, guid: 2f8f5f39b1c54b1caeaa4f7d46fe9e31, type: 2}
   _initialPoolSize: 5
@@ -3834,7 +3835,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa19995c078e0de4882020a3cb947520, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player
-  _jumpForce: 40
+  _jumpForce: 100
   _audioSource: {fileID: 9117384333558304760}
   _rigidbody: {fileID: 1340371715436068152}
 --- !u!108 &7880229237169107137
@@ -4138,6 +4139,18 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!75 &9117384333558304761
+ConstantForce:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2486862386087069286}
+  m_Enabled: 1
+  m_Force: {x: 0, y: -25, z: 0}
+  m_RelativeForce: {x: 0, y: 0, z: 0}
+  m_Torque: {x: 0, y: 0, z: 0}
+  m_RelativeTorque: {x: 0, y: 0, z: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
