@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Cactus
   m_EditorClassIdentifier: 
   _initialMoveSpeed: 7.5
-  _speedIncrement: 0.5
-  _maxMoveSpeed: 40
+  _accelerationPerSecond: 0.08
+  _maxMoveSpeed: 16.5
