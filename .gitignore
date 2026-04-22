@@ -87,3 +87,20 @@ crashlytics-build.properties
 # OPS Obfuscator: ignore generated logs
 Assets/GUPS/Obfuscator/Log/*.txt
 Assets/GUPS/Obfuscator/Log/*.log
+
+# Google Firebase: allow necessary bundle, DLL, PDB, pom, srcaar, so
+!Assets/ExternalDependencyManager/Editor/**/*.dll
+!Assets/ExternalDependencyManager/Editor/**/*.pdb
+!Assets/Firebase/Editor/*.pdb
+!Assets/Firebase/Editor/*.txt
+!Assets/Firebase/Editor/m2repository/com/google/firebase/firebase-app-unity/**/*.pom
+!Assets/Firebase/Editor/m2repository/com/google/firebase/firebase-app-unity/**/*.srcaar
+!Assets/Firebase/Editor/m2repository/com/google/firebase/firebase-auth-unity/**/*.pom
+!Assets/Firebase/Editor/m2repository/com/google/firebase/firebase-auth-unity/**/*.srcaar
+!Assets/Firebase/Editor/m2repository/com/google/firebase/firebase-database-unity/**/*.pom
+!Assets/Firebase/Editor/m2repository/com/google/firebase/firebase-database-unity/**/*.srcaar
+!Assets/Firebase/Plugins/*.pdb
+!Assets/Firebase/Plugins/iOS/*.pdb
+!Assets/Firebase/Plugins/x86_64/*.bundle
+!Assets/Firebase/Plugins/x86_64/*.dll
+!Assets/Firebase/Plugins/x86_64/*.so
