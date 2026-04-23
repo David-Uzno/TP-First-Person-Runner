@@ -91,6 +91,7 @@ Assets/GUPS/Obfuscator/Log/*.log
 # Google Firebase: allow necessary bundle, DLL, PDB, pom, srcaar, so
 !Assets/ExternalDependencyManager/Editor/**/*.dll
 !Assets/ExternalDependencyManager/Editor/**/*.pdb
+!Assets/ExternalDependencyManager/Editor/*.txt
 !Assets/Firebase/Editor/*.pdb
 !Assets/Firebase/Editor/*.txt
 !Assets/Firebase/Editor/m2repository/com/google/firebase/firebase-app-unity/**/*.pom
