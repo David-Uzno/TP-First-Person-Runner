@@ -88,7 +88,7 @@ crashlytics-build.properties
 Assets/GUPS/Obfuscator/Log/*.txt
 Assets/GUPS/Obfuscator/Log/*.log
 
-# Google Firebase: allow necessary bundle, DLL, PDB, pom, srcaar, so
+# Google Firebase: allow necessary bundle, DLL, PDB, pom, srcaar, so, txt
 !Assets/ExternalDependencyManager/Editor/**/*.dll
 !Assets/ExternalDependencyManager/Editor/**/*.pdb
 !Assets/ExternalDependencyManager/Editor/*.txt
